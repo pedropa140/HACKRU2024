@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 import os.path
 
 # Third-Party Imports
-from flask import Flask, jsonify, render_template, redirect, request, session, url_for, g
+from flask import Flask, jsonify, render_template, redirect, request, session, url_for, g, session
 from datetime import datetime, timezone
 import datetime as dt
 
 import cloudflare
+from authlib.integrations.flask_client import OAuth
 
 API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
 headers = {"Authorization": "Bearer wkd748PVSeSQRk2iQSS-eb8rB25ihto-296YmYAD"}
