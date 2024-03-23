@@ -33,4 +33,8 @@ def scrape(url):
             # Add the event to the events list
             events.append({'description': description})
 
+        # unique_events
+        # pass to ai to grab actual important events
+        # ai returns some format that is parsable back to events again
+        
     return events
