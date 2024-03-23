@@ -12,6 +12,10 @@ import datetime as dt
 
 # User Library Imports
 from scraper import scrape
+import cloudflare
+
+API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
+headers = {"Authorization": "Bearer wkd748PVSeSQRk2iQSS-eb8rB25ihto-296YmYAD"}
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -83,12 +87,34 @@ def chatbot():
 
         userInput = request.form.get("message")
         print("User Input:", userInput)
+        query = f'The question the user wants to ask is {userInput}.'
+        inputs = [
+            { "role": "system", "content": "As a chatbot, your goal is to help with questions that only pertain into women in the field of STEM. Please answer the prompt not in markdown please." },
+            { "role": "user", "content": query}
+        ]
+        result_dictionary = cloudflare.run("@cf/meta/llama-2-7b-chat-int8", inputs)
+        print(result_dictionary['result'])
+        result_result = result_dictionary['result']
+        result_response = result_result['response']
+        formatted_message = ""
+        lines = result_response.text.split("\n")
+
+        for line in lines:
+            bold_text = ""
+            while "**" in line:
+                start_index = line.index("**")
+                end_index = line.index("**", start_index + 2)
+                bold_text += "<strong>" + line[start_index + 2:end_index] + "</strong>"
+                line = line[:start_index] + bold_text + line[end_index + 2:]
+            formatted_message += line + "<br>"
+        question_response = (userInput, formatted_message)
+
+        print(question_response)
 
         return render_template("chatbot.html", question_response=question_response)
     else:
         question_response = ("", "")
         return render_template("chatbot.html", question_response=question_response)
-
 
 @app.route('/events', methods=["GET", "POST"])
 def prodev():
