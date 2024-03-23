@@ -51,66 +51,52 @@ def parse_raw(url):
 
     return event_project
 
-def scrape(url):
-    # Send a GET request to the URL
-    response = requests.get(url)
+import json
 
-    # # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    # Find all divs with text related to jobs, events, and dates
-    event_divs = soup.find_all(lambda tag: tag.name == 'div' and re.search(r'\b(job|event|date)\b', tag.text, flags=re.I))
-
-    # event_divs = 
-
-    # Use a set to store unique descriptions
-    unique_descriptions = set()
-
-    # Extract relevant information from each div
-    
+def extract_events(response_json):
+    # Extract event name and time from the JSON
+    data = response_json['result']['response']
+    # Remove triple-backtick formatting for JSON
+    data = data.replace('```json', '').replace('```', '')
     events = []
+    try:
+        event_list = json.loads(data)
+        for event in event_list:
+            events.append({
+                'title': event['name'],
+                'description': '',
+                'date': f"{event['start_time']} - {event['end_time']}"
+            })
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+    return events
 
+
+
+def scrape(url):
     query = f"""
-        From this string, get the event date, event name, and event description and give it to me in this exact format: 
-        
-        Event Name: "Event name"
-        Event Start Time: "YYYY-MM-DDTHH:MM"
-        Event End Time: "YYYY-MM-DDTHH:MM"
+        From this string, get the event name, event date, and event description and provide it in the json below. 
+        Events cannot be the same, however, they can have the same times and dates.
+        Do not deviate from format  or you will be terminated: 
+        [
+            {{
+                name: "Event name"
+                start_time: "YYYY-MM-DDTHH:MM"
+                end_time: "YYYY-MM-DDTHH:MM"
+            }}
+        ]
 
-        Here is the string you need to use:
+        Here is the string you need to use: {parse_raw(url)}
     """
 
     input = [
-        { "role": "system", "content": "You are a friendly assistant that helps write stories" },
+        { "role": "system", "content": "You are an A.I. that only functions to parse information to json formats requested by the user. Do not say any additional information, and return the user the info they expect." },
         { "role": "user", "content": query}
     ]
-
-    count = 1
-
-    for div in event_divs:
-        # Extract titles, paragraphs, and sentences from the div's text
-        titles = div.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-        paragraphs = div.find_all('p')
-        sentences = re.findall(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', div.text)
-
-        # Concatenate titles, paragraphs, and sentences into a single description
-        description = ' '.join([title.text.strip() for title in titles] + [para.text.strip() for para in paragraphs] + sentences)
-
-
-        # Check if the description is unique
-        if description not in unique_descriptions:
-            unique_descriptions.add(description)
-            # Add the event to the events list
-            input[1]["content"] += "Description" + str(count) + ": " + description
-            count += 1
         
-            # events.append({'description': input[1]["content"]})
+    output = run("@cf/qwen/qwen1.5-14b-chat-awq", input)
+    #output=parse_raw(url)
 
-        
-    output = run("@cf/meta/llama-2-7b-chat-fp16", input)
-
-
-    
     # print(events)
     # 
     # unique_events
@@ -120,4 +106,4 @@ def scrape(url):
     # with open("pedro.txt", 'w') as file:
     #     file.write(events)
 
-    return events
+    return extract_events(output)
