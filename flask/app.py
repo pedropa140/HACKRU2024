@@ -10,9 +10,8 @@ from flask import Flask, jsonify, render_template, redirect, request, session, u
 from datetime import datetime, timezone
 import datetime as dt
 
-
-# External Library Imports
-
+# User Library Imports
+from scraper import scrape
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -117,7 +116,16 @@ def prodev():
     else:
        return render_template("events.html")
 
+@app.route('/scrape-events')
+def scrape_events():
+    # URL of the website to scrape
+    url = 'https://climateaction.rutgers.edu/'  # Replace with the actual URL of the website
 
+    # Scrape events using the scrape() method
+    events = scrape(url)
+
+    # Render the scraped events using the scrape-events.html template
+    return render_template('scrape-events.html', events=events)
 
 
 init_db()
