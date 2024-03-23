@@ -15,4 +15,4 @@ build/
 
 /node_modules
 
-profiles.db
+*profiles.db
