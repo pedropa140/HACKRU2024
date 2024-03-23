@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import datetime as dt
 
 # User Library Imports
-from scraper import scrape
+from scraper import get_events
 import cloudflare
 from authlib.integrations.flask_client import OAuth
 
@@ -149,7 +149,7 @@ def scrape_events():
     url = 'https://climateaction.rutgers.edu/'  # Replace with the actual URL of the website
 
     # Scrape events using the scrape() method
-    events = scrape(url)
+    events = get_events([url])
 
     # Render the scraped events using the scrape-events.html template
     return render_template('scrape-events.html', events=events)

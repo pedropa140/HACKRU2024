@@ -1,6 +1,5 @@
 import requests
 import json
-import datetime
 from bs4 import BeautifulSoup
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -71,8 +70,6 @@ def extract_events(response_json):
         print(f"Error decoding JSON: {e}")
     return events
 
-
-
 def scrape(url):
     query = f"""
         From this string, get the event name, event date, and event description and provide it in the json below. 
@@ -95,15 +92,12 @@ def scrape(url):
     ]
         
     output = run("@cf/qwen/qwen1.5-14b-chat-awq", input)
-    #output=parse_raw(url)
-
-    # print(events)
-    # 
-    # unique_events
-    # pass to ai to grab actual important events
-    # ai returns some format that is parsable back to events again
-
-    # with open("pedro.txt", 'w') as file:
-    #     file.write(events)
 
     return extract_events(output)
+
+def get_events(urls):
+    all_events = []
+    for url in urls:
+        events = scrape(url)
+        all_events.extend(events)
+    return all_events
