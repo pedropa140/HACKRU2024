@@ -16,4 +16,4 @@ inputs = [
     { "role": "user", "content": "Write a short story about a llama that goes on a journey to find an orange cloud "}
 ];
 output = run("@cf/meta/llama-2-7b-chat-int8", inputs)
-print(output)
+# print(output)
