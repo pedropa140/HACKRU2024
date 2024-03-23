@@ -13,6 +13,9 @@ def scrape(url):
     # Find all divs with text related to jobs, events, and dates
     event_divs = soup.find_all(lambda tag: tag.name == 'div' and re.search(r'\b(job|event|date)\b', tag.text, flags=re.I))
 
+    # Use a set to store unique descriptions
+    unique_descriptions = set()
+
     # Extract relevant information from each div
     events = []
     for div in event_divs:
@@ -24,7 +27,10 @@ def scrape(url):
         # Concatenate titles, paragraphs, and sentences into a single description
         description = ' '.join([title.text.strip() for title in titles] + [para.text.strip() for para in paragraphs] + sentences)
 
-        # Add the event to the events list
-        events.append({'description': description})
+        # Check if the description is unique
+        if description not in unique_descriptions:
+            unique_descriptions.add(description)
+            # Add the event to the events list
+            events.append({'description': description})
 
     return events
