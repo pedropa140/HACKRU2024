@@ -95,7 +95,7 @@ def chatbot():
         result_result = result_dictionary['result']
         result_response = result_result['response']
         formatted_message = ""
-        lines = result_response.text.split("\n")
+        lines = result_response.split("\n")
 
         for line in lines:
             bold_text = ""

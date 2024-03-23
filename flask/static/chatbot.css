@@ -1,6 +1,6 @@
 body {
     height: 100vh;
-    /* background-color: red; */
+    /* width: 100%; */
     overflow: hidden;
 }
 body::-webkit-scrollbar {
@@ -15,7 +15,7 @@ h1 {
     /* background-color: pink; */
 }
 #chatbot_area_chat {
-    height: 80vh;
+    height: 60vh;
     width: 100%;
     overflow: scroll;
 }
@@ -27,13 +27,11 @@ h1 {
     height: 100%;
     padding-left: 40px;
     padding-right: 40px;
+    background-origin: red;
     /* padding-top: 15px; */
-    background-color: transparent;
 }
 #chatbot_area_textbox {
-    /* height: 35%; */
     width: 100%;
-    /* background-color: white; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,20 +77,18 @@ input[type="text"]:valid + button[type="submit"] {
 #userInput {    
     width: 65%;
     margin-left: auto;
-    text-align: right;
     display: flex;
-    justify-content: flex-end;
 }
-#userInput p{    
-    width: auto;
-    margin: none;
+#userInput p{
+    margin-left: auto;
+    margin-right: 100px;
     background-color: #5fc9f8;
     border-radius: 5px;
     color: white;
     font-size: 15px;
 }
 #botInput {
-    width: 65%;
+    max-width: 65%;
     margin-right: auto;
     text-align: left;
     display: flex;
