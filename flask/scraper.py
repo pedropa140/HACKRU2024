@@ -12,6 +12,7 @@ def scrape(url):
     # Find all elements containing the text 'event' or similar
     event_elements = soup.find_all(lambda tag: tag.name == 'div' and 'event' in tag.text.lower())
 
+    # awieygiufijdk
     # Extract relevant information from each event element
     events = []
     for event in event_elements:
