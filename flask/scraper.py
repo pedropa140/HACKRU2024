@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from cloudflare import run
+import re
 
 def scrape(url):
     # Send a GET request to the URL
@@ -9,14 +10,21 @@ def scrape(url):
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find all elements containing text that could be event-related
-    event_elements = soup.find_all(lambda tag: tag.name == 'div' and ('event' in tag.text.lower() or 'job' in tag.text.lower()))
+    # Find all divs with text related to jobs, events, and dates
+    event_divs = soup.find_all(lambda tag: tag.name == 'div' and re.search(r'\b(job|event|date)\b', tag.text, flags=re.I))
 
-    # Extract relevant information from each event element
+    # Extract relevant information from each div
     events = []
-    for event in event_elements:
-        title = event.find('h2').text.strip() if event.find('h2') else 'No Title'
-        description = event.text.strip() if event else 'No Description'
-        events.append({'title': title, 'description': description})
+    for div in event_divs:
+        # Extract titles, paragraphs, and sentences from the div's text
+        titles = div.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+        paragraphs = div.find_all('p')
+        sentences = re.findall(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', div.text)
+
+        # Concatenate titles, paragraphs, and sentences into a single description
+        description = ' '.join([title.text.strip() for title in titles] + [para.text.strip() for para in paragraphs] + sentences)
+
+        # Add the event to the events list
+        events.append({'description': description})
 
     return events
