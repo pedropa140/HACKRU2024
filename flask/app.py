@@ -4,6 +4,7 @@ import sqlite3
 from os import urandom
 from dotenv import load_dotenv
 import os.path
+import json
 
 # Third-Party Imports
 from flask import Flask, jsonify, render_template, redirect, request, session, url_for, g, session
@@ -106,9 +107,34 @@ def login():
 
 @app.route('/authorized')
 def authorized():
-    token = oauth.oauthApp.authorize_access_token()
-    return redirect(url_for('chatbot'))
+    # token = oauth.oauthApp.
+    # oauth_token = token['access_token']
+    # session['oauth_token'] = oauth_token
+    # token = {
+    #     "token": session['oauth_token']
+    # }
+    # with open('token.json', 'w') as file:
+    #     file.write(json.dumps(token))
+    creds = None
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    
 
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                if os.path.exists("token.json"):
+                    os.remove("token.json")
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            creds = flow.run_local_server(port = 0)
+
+            with open("token.json", "w") as token:
+                token.write(creds.to_json())
+    
+    return redirect(url_for('chatbot'))
 
 @app.route("/chatbot", methods=["GET", "POST"])
 def chatbot():
@@ -258,6 +284,7 @@ def sustainabilityplanner():
         creds = None
         if os.path.exists("token.json"):
             creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+        
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
@@ -272,7 +299,7 @@ def sustainabilityplanner():
 
                 with open("token.json", "w") as token:
                     token.write(creds.to_json())
-
+        
         try:
             service = build("calendar", "v3", credentials = creds)
             now = dt.datetime.now().isoformat() + "Z"
