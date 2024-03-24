@@ -175,7 +175,7 @@ def authorized():
     
     global user_logged_in
     user_logged_in = True
-    return redirect(url_for('chatbot'))
+    return redirect(url_for('carbon'))
 
 @app.route("/logout")
 def logout():
