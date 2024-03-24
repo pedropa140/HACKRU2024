@@ -25,6 +25,7 @@ from google.generativeai import generative_models
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
 headers = {"Authorization": "Bearer wkd748PVSeSQRk2iQSS-eb8rB25ihto-296YmYAD"}
@@ -208,13 +209,18 @@ def generate_scheduling_query(tasks):
     for task in tasks:
         taskss+=f"'{task}'\n"
     print(taskss)
-    # model = genai.GenerativeModel('models/gemini-pro')
-    # result = model.generate_content(query + taskss)
-    
-    return result
+    inputs = [
+        { "role": "system", "content": query},
+        { "role": "user", "content": taskss}
+    ]
+    result_dictionary = cloudflare.run("@cf/meta/llama-2-7b-chat-int8", inputs)
+    # print(result_dictionary)
+    result_result = result_dictionary['result']
+    result_response = result_result['response']
+    return result_response
 
 @app.route("/sustainabilityplanner", methods=["GET", "POST"])
-def taskschedule():
+def sustainabilityplanner():
     if request.method == "POST":
         data = request.json
         tasks = data.get("tasks")
@@ -223,17 +229,18 @@ def taskschedule():
             i = i.replace('Delete Task', '')
             stripTasks.append(i)
         query_result = generate_scheduling_query(stripTasks)
-        content = query_result.text
+        # print(query_result)
+        content = query_result
         content = '\n'.join([line for line in content.split('\n') if line.strip()])
         
         x = 0
         lines = content.split('\n')
         schedule = []
 
-        for x in range(0, len(lines)-2, 3):
+        for x in range(1, len(lines)-2, 3):
             if lines[x] == '': continue
             else:
-                task_info ={
+                task_info = {
                     "task": lines[x].split(" = ")[1].strip("'"),
                     "start_time": lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00",
                     "end_time": lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"

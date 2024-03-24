@@ -90,7 +90,6 @@
     </style>
 </head>
 <body>
-    {% comment %} {% include 'navbar-auth.html' %} {% endcomment %}
 
     <div class="container mt-4">
         <h2 class="title">Your Tasks</h2>
@@ -161,7 +160,7 @@
 
         function submitTasks() {
             var tasks = Array.from(document.querySelectorAll("#list li")).map(task => task.textContent);
-            fetch('/taskschedule', {
+            fetch('/sustainabilityplanner', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
