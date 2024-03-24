@@ -1,9 +1,8 @@
 import requests
-import json
 from bs4 import BeautifulSoup
-import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from datetime import datetime
 
 def scrape(url):
     # Send a GET request to the URL
@@ -20,6 +19,9 @@ def scrape(url):
     for event_element in event_elements:
         event_title = event_element.text.strip()
         event_time_element = event_element.find_next_sibling('span', class_='duration time')
+        event_link_element = event_element.find_next('a')  # Find the next <a> tag after the h4 element
+        event_description = ''
+
         if event_time_element:
             event_time_raw = event_time_element.text.strip()
             # Modify time format to "YYYY-MM-DDTHH:MM"
@@ -32,18 +34,37 @@ def scrape(url):
                     end_time = start_time[:10] + ' ' + end_time
                 start_time = format_date_time(start_time)
                 end_time = format_date_time(end_time)
+
+                # Get description from the link
+                if event_link_element:
+                    event_link = event_link_element['href']
+                    event_description = get_description_from_link(event_link)
+
                 events.append({
                     'title': event_title,
-                    'description': '',
+                    'description': event_description,
                     'start_time': start_time,
-                    'end_time': end_time
+                    'end_time': end_time,
+                    'link': event_link
                 })
 
     return events
 
-from datetime import datetime
+def get_description_from_link(link):
+    # Send a GET request to the link
+    response = requests.get(link)
+    soup = BeautifulSoup(response.content, 'html.parser')
 
-from datetime import datetime
+    # Find the element containing the description
+    description_element = soup.find('div', class_='tribe-events-single-event-description tribe-events-content')
+
+    # Extract and return the description text
+    if description_element:
+        description = description_element.text.strip()
+        return description
+    else:
+        return ''
+
 
 def format_date_time(date_time_str):
     try:
@@ -63,8 +84,12 @@ def format_date_time(date_time_str):
         print("Error: Invalid date and time format.")
         return None
 
-
-
+def get_events(urls):
+    all_events = []
+    for url in urls:
+        events = scrape(url)
+        all_events.extend(events)
+    return all_events
 
 # def extract_events(response_json):
 #     print(response_json)
@@ -109,10 +134,3 @@ def format_date_time(date_time_str):
 #     output = run("@cf/qwen/qwen1.5-14b-chat-awq", input)
 
 #     return extract_events(output)
-
-def get_events(urls):
-    all_events = []
-    for url in urls:
-        events = scrape(url)
-        all_events.extend(events)
-    return all_events
