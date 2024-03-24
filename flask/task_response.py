@@ -26,7 +26,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!addtask")
         await message.channel.send(file=file, embed=embed)
         def check(m):
@@ -40,7 +40,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!addtask")
             await message.channel.send(file=file, embed=embed)
             return
@@ -50,7 +50,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
         embed.set_footer(text="!addtask")
         await message.channel.send(file=file, embed=embed)
@@ -77,7 +77,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
                 embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
                 file = discord.File('static/Images/icon.png', filename='icon.png')
                 embed.set_thumbnail(url='attachment://icon.png')
-                embed.set_author(name="Reminder-Bot says:")
+                embed.set_author(name="GreenHabits-Bot says:")
                 embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
                 embed.set_footer(text="!changereminder")
                 await message.channel.send(file=file, embed=embed)
@@ -88,7 +88,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!addtask")
             await message.channel.send(file=file, embed=embed)
             return
@@ -98,7 +98,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
         embed.set_footer(text="!addtask")
         await message.channel.send(file=file, embed=embed)
@@ -125,7 +125,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
                 embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
                 file = discord.File('static/Images/icon.png', filename='icon.png')
                 embed.set_thumbnail(url='attachment://icon.png')
-                embed.set_author(name="Reminder-Bot says:")
+                embed.set_author(name="GreenHabits-Bot says:")
                 embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
                 embed.set_footer(text="!changereminder")
                 await message.channel.send(file=file, embed=embed)
@@ -136,7 +136,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!addtask")
             await message.channel.send(file=file, embed=embed)
             return
@@ -212,7 +212,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.add_field(name="Task Name", value=description[1], inline=False)
         embed.add_field(name="Task Start Date", value=description[2], inline=False)
         embed.add_field(name="Task End Date", value=description[3], inline=False)
@@ -228,7 +228,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!addtask")
         await message.channel.send(file=file, embed=embed)
             
@@ -249,7 +249,7 @@ async def todaytask(message : discord.message.Message, client : discord.Client, 
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         for item in sorted_data:
             string = f'{item[2]} to {item[3]}'
             embed.add_field(name=item[1], value=string, inline=False)
@@ -261,7 +261,7 @@ async def todaytask(message : discord.message.Message, client : discord.Client, 
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!todaytask")
         await message.channel.send(file=file, embed=embed)
 
@@ -281,7 +281,7 @@ async def alltask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         for item in sorted_data:
             string = f'{item[2]} to {item[3]}'
             embed.add_field(name=item[1], value=string, inline=False)
@@ -293,7 +293,7 @@ async def alltask(message : discord.message.Message, client : discord.Client, us
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!alltasks")
         await message.channel.send(file=file, embed=embed)
 
@@ -305,7 +305,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         for i in listTasks:
             string = f'{i[2]} to {i[3]}'
             embed.add_field(name=i[1], value=string, inline=False)
@@ -321,7 +321,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
             return
@@ -337,7 +337,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
         else:
@@ -346,7 +346,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
     else:
@@ -355,7 +355,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!removetask")
         await message.channel.send(file=file, embed=embed)
 
@@ -375,7 +375,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         for i in sorted_data:
             string = f'{i[2]} to {i[3]}'
             embed.add_field(name=i[1], value=string, inline=False)
@@ -391,7 +391,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
             return
@@ -407,7 +407,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
         else:
@@ -416,7 +416,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
             file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
-            embed.set_author(name="Reminder-Bot says:")
+            embed.set_author(name="GreenHabits-Bot says:")
             embed.set_footer(text="!removetask")
             await message.channel.send(file=file, embed=embed)
     else:
@@ -425,6 +425,6 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
         file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
-        embed.set_author(name="Reminder-Bot says:")
+        embed.set_author(name="GreenHabits-Bot says:")
         embed.set_footer(text="!completetask")
         await message.channel.send(file=file, embed=embed)
