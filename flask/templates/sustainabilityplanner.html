@@ -94,6 +94,12 @@
             margin-bottom: 0.75rem; /* Bottom margin for title */
         }
 
+        .disabled-btn {
+            background-color: #f1f1f1; /* Light gray background */
+            cursor: not-allowed; /* Show disabled cursor */
+            opacity: 0.6; /* Reduce opacity for a disabled look */
+        }
+
     </style>
 </head>
 <body class="d-flex justify-content-center">
@@ -187,7 +193,7 @@
                     cardBody.className = "p-4 d-flex align-items-center";
         
                     var title = document.createElement("h3");
-                    title.className = "card-title mb-4 text-wrap";
+                    title.className = "card-title mb-4 text-wrap flex";
                     title.textContent = task;
         
                     var keywordsList = document.createElement("ul");
@@ -256,18 +262,11 @@
             return finalURL;
         }
         
-        
-        
-        // Example usage:
-        var task = "Education Edition Deployment And Set Up"; // Replace with user input
-        var cardElement = createListItem(task);
-        document.getElementById("taskList").appendChild(cardElement);
-        
 
         function createDeleteButton(listItem) {
             var deleteBtn = document.createElement("button");
             deleteBtn.textContent = "×"; // Using a close symbol
-            deleteBtn.className = "rounded-2 bg-red";
+            deleteBtn.className = "rounded-2";
             deleteBtn.onclick = function () {
                 listItem.parentElement.remove();
                 tasksAdded--;
@@ -276,9 +275,17 @@
             return deleteBtn;
         }
 
-        function toggleSubmitBtn() {
-            document.getElementById("submitBtn").style.display = tasksAdded >= 1 ? "block" : "none";
+        function toggleSubmitBtn(disabled) {
+            var submitBtn = document.getElementById("submitBtn");
+            if (disabled) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add("disabled-btn");
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove("disabled-btn");
+            }
         }
+        
 
         function submitTasks() {
             var tasks = Array.from(document.querySelectorAll(".card-title")).map(task => task.textContent);
