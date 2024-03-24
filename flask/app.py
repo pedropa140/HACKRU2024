@@ -15,7 +15,7 @@ from scraper import get_events
 import cloudflare
 from authlib.integrations.flask_client import OAuth
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+# from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 
 from google.auth import load_credentials_from_file
 from google.oauth2 import credentials
@@ -24,7 +24,6 @@ from google.oauth2.credentials import Credentials
 from google.generativeai import generative_models
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-
 from googleapiclient.errors import HttpError
 
 API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
