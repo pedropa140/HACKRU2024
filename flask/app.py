@@ -337,7 +337,9 @@ def generate_scheduling_query(tasks):
         INCLUDE ALL TASKS PASSED BY THE USER.
         Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
         DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
-        If a task is not given a time, manage the times, but do not override user specified times.
+        If a task is not given a time, move the times around so they don't overlap, but do not override user specified times.
+        Do not remove items unless they truly are irrelevant.
+        The presence of all tasks will be checked at the end to ensure you are functioning properly. Otherwise, you will be disposed of.
     As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
         Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
@@ -355,7 +357,6 @@ def generate_scheduling_query(tasks):
     Prioritize events by their ordering, and move events that may not fit in the same day to the next day.
     Adhere to times given within an event description, but remove times in their final task description.
     Please do not add anything beyond above, do not add a trailing or beginning message please.
-    Here are the user provided tasks:
     """
     taskss =""
     for task in tasks:
