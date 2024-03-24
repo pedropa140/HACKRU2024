@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import datetime as dt
 
 # User Library Imports
-from scraper import get_events
+from scraper import get_events, format_date_time
 import cloudflare
 from authlib.integrations.flask_client import OAuth
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -219,7 +219,10 @@ def prodev():
     ])
 
     # Render the scraped events using the scrape-events.html template
-    return render_template('events.html', events=events)
+    return render_template('events.html', events=events, format_str=format_str)
+
+def format_str(str):
+    return format_date_time(str)
 
 @app.route('/scrape-events')
 def scrape_events():

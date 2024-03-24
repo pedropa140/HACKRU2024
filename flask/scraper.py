@@ -26,12 +26,12 @@ def scrape(url):
             event_time_parts = event_time_raw.split(' - ')
             if len(event_time_parts) == 2:
                 start_time = event_time_parts[0].replace(' at ', 'T')
-                end_time = event_time_parts[1].replace(' at ', 'T')
+                end_time = event_time_parts[1]#.replace(' at ', 'T')
                 # Append date from start_time if no date is given for end_time
                 if len(end_time) < 11:
                     end_time = start_time[:10] + ' ' + end_time
-                start_time = format_date_time(start_time)
-                end_time = format_date_time(end_time)
+                #start_time = format_date_time(start_time)
+                #end_time = format_date_time(end_time)
 
                 # Get description from the link
                 if event_link_element:
