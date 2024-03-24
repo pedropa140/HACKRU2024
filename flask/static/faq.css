@@ -1,0 +1,7 @@
+.faq-content {
+    display: none;
+}
+
+.faq-expanded {
+    display: block;
+}

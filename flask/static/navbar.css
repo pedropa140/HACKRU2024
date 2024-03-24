@@ -1,9 +1,5 @@
 @import url('../static/colors.css');
-
-body {
-    padding-top: 5rem;
-}
-
+@import url('../static/names.css');
 .btn-custom {
     color: var(--text-color);
     background-color: transparent;

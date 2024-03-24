@@ -8,10 +8,10 @@ crossorigin="anonymous"
 />
 <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
 
-<nav class="navbar navbar-dark bg-dark fixed-top mb-3">
+<nav class="navbar navbar-light bg-light text-black fixed-top">
   <div class="container-fluid">
     <!-- Brand -->
-    <a class="navbar-brand" href="{{ url_for('mainpage') }}">Rutgers IEEE</a>
+    <a class="navbar-brand" href="{{ url_for('mainpage') }}">{{ app_name }}</a>
     <!-- Offcanvas toggle button -->
     <button
       class="navbar-toggler"
@@ -24,7 +24,7 @@ crossorigin="anonymous"
     </button>
     <!-- Offcanvas content -->
     <div
-      class="offcanvas offcanvas-end bg-dark"
+      class="offcanvas offcanvas-end"
       tabindex="-1"
       id="offcanvasNavbar"
       aria-labelledby="offcanvasNavbarLabel"

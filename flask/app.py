@@ -49,6 +49,12 @@ oauth.register(
 )
 
 
+app_name = "Green Habits"
+
+@app.context_processor
+def inject_global_variable():
+    return dict(app_name=app_name)
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
