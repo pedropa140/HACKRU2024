@@ -249,14 +249,13 @@ def generate_scheduling_query(tasks):
     query += """
     As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user, including shorter shower times. Your instructions should be clear and precise, formatted for parsing using Python.
         Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
-        For example, do not start with I understand just go straight into the format I am asking you to use
-        Do not generate additional tasks that are not included below, follow the sheet to spec.
+        DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
+    As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
+    Do not create any imaginary tasks and do not modify them, stick to the users input, and make sure unique tasks are kept separate and included.
         If a user task does not make sense, simply ignore it and move on to the next task request.
+        Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
-    Task Description: Provide a brief description of the task or event. For example:
-
-    Task Description: "Meeting with client"
-    Scheduling Parameters: Consider the user's work-life balance and aim to schedule the event at an appropriate time. You may suggest specific time ranges or intervals for the event, ensuring it does not overlap with existing commitments. For instance:
+    When setting 'task' do not include the time, that will be it's own parameter.
     
     Start time: "YYYY-MM-DDTHH:MM"
     End time: "YYYY-MM-DDTHH:MM"
@@ -318,7 +317,7 @@ def sustainabilityplanner():
                 meep2 = lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00"
                 print(meep2)
                 meep3 = lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
-                print(meep3)
+                print(meep3 + "1")
                 task_info = {
                     "task": meep,
                     "start_time": meep2,
