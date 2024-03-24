@@ -506,7 +506,7 @@ def carbon():
 
         total_carbon = shower_carbon + driving_carbon + meat_carbon
 
-        return render_template("carbon.html", total_carbon=total_carbon)
+        return render_template("carbon.html", total_carbon=total_carbon, meat_carbon=meat_carbon, shower_carbon=shower_carbon, driving_carbon=driving_carbon)
     else:
         return render_template("carbon.html", total_carbon=None)
 
