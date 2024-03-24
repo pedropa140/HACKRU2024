@@ -53,6 +53,33 @@ oauth.register(
 
 app_name = "Green Habits"
 
+from flask import Flask, jsonify, request
+from cloudflare import run
+
+@app.route('/rank-keywords', methods=['POST'])
+def rank_keywords():
+    data = request.get_json()
+    text = data['text']  # Assuming 'text' contains the input text from the user
+    
+    # Prepare inputs for the Cloudflare run method
+    model = "@cf/meta/llama-2-7b-chat-int8"  # Replace with the actual model name
+    inputs = [
+        { "role": "system", "content": "You are an A.I. that creates very short image queries using keywords that will correctly represent a given text. If no reasonable query can be deducedfrom the text, query for abstract images instead. Do not say anything else but the query itself. Do not show any human mannerisms, only produce the result. Do not include any prefixes such as 'Image:' or 'Query:'. When referencing real life names, monuments or celebrities refer back to abstract art. Not following instructions will lead to termination." },
+        {"role": "user", "content": text}  # Pass user input as content to the model
+    ]
+
+    # Call the Cloudflare run method to rank keywords
+    output = run(model, inputs)
+    # Assuming output is already a dictionary representing the JSON response
+    # Extract the response text from the JSON object
+    response_text = output['result']['response']
+    # Remove words before colon
+    response = response_text.split(':', 1)[-1].strip()
+    print(response)
+
+    # Return the ranked keywords as JSON
+    return jsonify({'keywords': response})
+
 @app.context_processor
 def inject_global_variable():
     return dict(app_name=app_name)

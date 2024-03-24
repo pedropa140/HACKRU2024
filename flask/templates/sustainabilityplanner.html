@@ -140,53 +140,100 @@
         function createListItem(task) {
             var card = document.createElement("div");
             card.className = "card mb-4 mb-xl-0 card-hover border";
-            
+        
             var cardInner = document.createElement("div");
             cardInner.className = "card-inner";
-            
+        
             var img = document.createElement("img");
             img.alt = "Task Image";
             img.className = "img-fluid w-100 rounded-top-3 card-img-top";
         
             // Event listener for image load
             img.onload = function() {
-                var cardBody = document.createElement("div");
-                cardBody.className = "card-body";
+                // Fetch ranked keywords from Flask endpoint
+                fetch('/rank-keywords', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: task }), // Send task as JSON data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var cardBody = document.createElement("div");
+                    cardBody.className = "card-body";
         
-                var title = document.createElement("h3");
-                title.className = "card-title mb-4 text-truncate";
-                title.textContent = task;
+                    var title = document.createElement("h3");
+                    title.className = "card-title mb-4 text-truncate";
+                    title.textContent = task;
         
-                var deleteBtn = createDeleteButton(cardInner);
-                cardBody.appendChild(title);
-                cardBody.appendChild(deleteBtn);
+                    var keywordsList = document.createElement("ul");
+                    keywordsList.className = "keywords-list"; // Create a class for styling
         
-                cardInner.appendChild(img);
-                cardInner.appendChild(cardBody);
+                    // Check if data.keywords is iterable
+                    if (data.keywords && typeof data.keywords.forEach === 'function') {
+                        // Iterate over ranked keywords and create list items
+                        data.keywords.forEach(function(keyword) {
+                            var listItem = document.createElement("li");
+                            listItem.textContent = keyword[0] + ': ' + keyword[1]; // Keyword and frequency
+                            keywordsList.appendChild(listItem);
+                        });
+                    }
         
-                card.appendChild(cardInner);
+                    var deleteBtn = createDeleteButton(cardInner);
+                    cardBody.appendChild(title);
+                    cardBody.appendChild(keywordsList);
+                    cardBody.appendChild(deleteBtn);
+        
+                    cardInner.appendChild(img);
+                    cardInner.appendChild(cardBody);
+        
+                    card.appendChild(cardInner);
+                })
+                .catch(error => console.error('Error:', error));
             };
         
-            // Fetch image URL based on user input keywords
-            var imageURL = fetchImageURL(task);
-            img.src = imageURL;
+            // Fetch image URL based on ranked keywords from Flask endpoint
+            fetch('/rank-keywords', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: task }), // Send task as JSON data
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if data.keywords is iterable and has at least one keyword
+                if (data.keywords && data.keywords.length > 0) {
+                    var imageURL = fetchImageURL(data.keywords); // Use the first keyword
+                    img.src = imageURL;
+                } else {
+                    // Use default image URL if no keywords are returned
+                    var defaultImageURL = 'https://via.placeholder.com/300'; // Placeholder image
+                    img.src = defaultImageURL;
+                }
+            })
+            .catch(error => console.error('Error:', error));
         
             return card;
         }
         
+               
         
         function fetchImageURL(keyword) {
-            // Here you can implement a function to fetch image URL based on keywords using a real image site
-            // For example, using a placeholder image site like Unsplash
-            var baseAPIUrl = 'https://source.unsplash.com/'; // Base URL for Unsplash images
-            var imageSize = '800x600'; // Image size
+            // Base URL for Unsplash images
+            var baseAPIUrl = 'https://source.unsplash.com/';
+            // Image size (width and height)
+            var imageSize = '800x600'; // Format: widthxheight
             var query = encodeURIComponent(keyword); // Encode keyword for URL
             
             // Construct final URL with keyword and image size
             var finalURL = baseAPIUrl + imageSize + '/?' + query;
-            
+            console.log(finalURL)
             return finalURL;
         }
+        
+        
         
         // Example usage:
         var task = "Education Edition Deployment And Set Up"; // Replace with user input
