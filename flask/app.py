@@ -273,11 +273,10 @@ def generate_scheduling_query(tasks):
     print(current_time_str)
     query = "Today is " + current_time_str + "\n"
     query += """
-    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. Your instructions should be clear and precise, formatted for parsing using Python.
+    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule.
     DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
-    Make sure to include all inputs as tasks from the user.
     As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
-    Do not create any imaginary tasks, stick to the users input, and make sure that all input is accounted for in the final response.
+    Do not create any imaginary tasks and do not modify them, stick to the users input, and make sure unique tasks are kept separate and included.
         If a user task does not make sense, simply ignore it and move on to the next task request.
         Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.

@@ -287,14 +287,32 @@
                 },
                 body: JSON.stringify({ tasks: tasks }),
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            .then(response => response.json())
+            .then(data => {
+                // Create a Bootstrap alert box
+                var alertBox = document.createElement("div");
+                alertBox.className = "alert alert-dismissible fade show fixed-top w-50 mx-auto mt-5";
+                alertBox.role = "alert";
+        
+                // Add alert message content
+                alertBox.innerHTML = `
+                    <strong>${data.message}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+        
+                // Append the alert box to the body
+                document.body.appendChild(alertBox);
+        
+                // Automatically close the alert after a few seconds (e.g., 5 seconds)
+                setTimeout(() => {
+                    alertBox.remove();
+                }, 5000);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
+        
     </script>
 </body>
 </html>
