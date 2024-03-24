@@ -98,7 +98,7 @@
 </head>
 <body class="d-flex justify-content-center">
     <header class='flex-col'>
-        {% include 'navbar.html' %}
+        {% include 'navbar-auth.html' %}
     </header>
     <div class="flex-col p-4 w-75 justify-content-center" style="margin-top: 60px;">
         <div class="d-flex align-items-center m-3">
@@ -257,12 +257,7 @@
         }
         
         
-        
-        // Example usage:
-        var task = "Education Edition Deployment And Set Up"; // Replace with user input
-        var cardElement = createListItem(task);
-        document.getElementById("taskList").appendChild(cardElement);
-        
+    
 
         function createDeleteButton(listItem) {
             var deleteBtn = document.createElement("button");
@@ -277,7 +272,7 @@
         }
 
         function toggleSubmitBtn() {
-            document.getElementById("submitBtn").style.display = tasksAdded >= 1 ? "block" : "none";
+            document.getElementById("submitBtn").style.display = tasksAdded > 0 ? "block" : "none";
         }
 
         function submitTasks() {

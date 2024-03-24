@@ -181,7 +181,7 @@ def chatbot():
         print("User Input:", userInput)
         query = f'The question the user wants to ask is {userInput}.'
         inputs = [
-            { "role": "system", "content": "As a chatbot, your goal is to help with questions that only pertain into women in the field of STEM. Please answer the prompt not in markdown please." },
+            { "role": "system", "content": "As a chatbot, your goal is to help with questions that only pertain sustainability. Please answer the prompt not in markdown please." },
             { "role": "user", "content": query}
         ]
         result_dictionary = cloudflare.run("@cf/meta/llama-2-7b-chat-int8", inputs)
@@ -209,7 +209,7 @@ def chatbot():
         return render_template("chatbot.html", question_response=question_response)
 
 @app.route('/events', methods=["GET", "POST"])
-def prodev():
+def events():
     # URL of the website to scrape
     #url = ''  # Replace with the actual URL of the website
 
@@ -247,7 +247,7 @@ def generate_scheduling_query(tasks):
     print(current_time_str)
     query = "Today is " + current_time_str + "\n"
     query += """
-    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. Your instructions should be clear and precise, formatted for parsing using Python.
+    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user, including shorter shower times. Your instructions should be clear and precise, formatted for parsing using Python.
         Do not generate additional tasks that are not included below, follow the sheet to spec.
         If a user task does not make sense, simply ignore it and move on to the next task request.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
@@ -398,6 +398,25 @@ def sustainabilityplanner():
     else:
         return render_template("sustainabilityplanner.html")
 
+@app.route("/cal")
+def cal():
+    return render_template("cal.html")
+
+@app.route("/carbon", methods=["GET", "POST"])
+def carbon():
+    if request.method == "POST":
+        shower_minutes = int(request.form.get("shower_minutes"))
+        daily_driving_distance = int(request.form.get("daily_driving_distance"))
+
+        # Calculate carbon footprint
+        shower_carbon = shower_minutes * 600  # grams CO2e
+        driving_carbon = daily_driving_distance * 10  # grams CO2e
+
+        total_carbon = shower_carbon + driving_carbon
+
+        return render_template("carbon.html", total_carbon=total_carbon)
+    else:
+        return render_template("carbon.html", total_carbon=None)
 
 init_db()
 if __name__ == "__main__":
