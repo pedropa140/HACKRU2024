@@ -146,10 +146,13 @@ def prodev():
 @app.route('/scrape-events')
 def scrape_events():
     # URL of the website to scrape
-    url = 'https://climateaction.rutgers.edu/'  # Replace with the actual URL of the website
+    #url = ''  # Replace with the actual URL of the website
 
     # Scrape events using the scrape() method
-    events = get_events([url])
+    events = get_events([
+        'https://climateaction.rutgers.edu/',
+        'https://rutgers.campuslabs.com/engage/events'
+    ])
 
     # Render the scraped events using the scrape-events.html template
     return render_template('scrape-events.html', events=events)
