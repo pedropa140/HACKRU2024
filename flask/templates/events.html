@@ -6,10 +6,13 @@
     <title>Event Signup</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation:wght@400..700&display=swap" rel="stylesheet">
     <style>
         /* Custom CSS */
         body {
-            background-color: rgba(16, 16, 16, 0.8) !important; /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-color: rgba(225, 184, 184, 0.8) !important; /* Replace 'path/to/your/image.jpg' with the actual path to your image */
             background-size: cover;
         }
 
@@ -21,6 +24,13 @@
             display: flex; /* Change display property to flex */
             flex-wrap: wrap; /* Allow wrapping of cards */
             justify-content: flex-start; /* Horizontally center cards */
+        }
+
+        .edu-nsw act foundation-unique {
+            font-family: "Edu NSW ACT Foundation", cursive;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
         }
 
         .card {
@@ -43,6 +53,7 @@
 
         .list-group-item {
             border: none;
+            height: 100%;
         }
 
         .card-title {
@@ -56,17 +67,38 @@
     {% include 'navbar.html' %}
 </header>
 <body>
-    <h1 class="text-white" style="text-align: center; position: relative; padding-bottom: 10px;">Sign up for available events</h1>
+    <h1 class="text-success display-3" style="text-align: center; position: relative; padding-top: 100px; font-family: Edu NSW ACT Foundation, cursive">Sign up for available events!</h1>
     <div class="container">
         {% for event in events %}
-        <div class="card">
+        <div class="card shadow bg-dark rounded">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-white bg-success"><h2 class="card-title">{{ event.title }}</h2></li>
-                <li class="list-group-item">
+                <li class="list-group-item text-white bg-dark">
                     <p class="card-text"><b>Description</b>: {% set sentences = event.description.split('.')[:2] %}{{ ' '.join(sentences) }}</p>
                     <p class="card-text"><b>Start Time</b>: {{ event.start_time }}</p>
                     <p class="card-text"><b>End Time</b>: {{ event.end_time }}</p>
                     <p class="card-text"><b>Link</b>: <a href={{event.link}}>Click here to learn more!</a></p>
+                    {% set start_str = format_str(event.start_time) %}
+                    {% set end_str = format_str(event.end_time) %}
+                    <button type="button" class="btn btn-info" onclick="attendEvent('${event.title}', '${sentences}', '${event.location}', '${start_str}', '${end_str}', '${+05:30}')">Add to Google Calendar!</button>
+                    <script>
+                        function attendEvent(name, description, location, date, startTime, endTime, timezone) {
+                            // Make an AJAX request to the server to submit the event name
+                            var xhr = new XMLHttpRequest();
+                            xhr.open("POST", "/events", true);
+                            xhr.setRequestHeader("Content-Type", "application/json");
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState === XMLHttpRequest.DONE) {
+                                    if (xhr.status === 200) {
+                                        alert("Attending event: " + name);
+                                    } else {
+                                        alert("Failed to attend event: " + name);
+                                    }
+                                }
+                            };
+                            xhr.send(JSON.stringify({ name: name, description: description, location: location, startTime: startTime, endTime: endTime, timezone: timezone }));
+                        }
+                    </script>
                 </li>
             </ul>
         </div>
