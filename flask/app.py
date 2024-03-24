@@ -236,49 +236,74 @@ def chatbot():
 
 @app.route('/events', methods=["GET", "POST"])
 def events():
-    # URL of the website to scrape
-    # url = ''  # Replace with the actual URL of the website
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-            except Exception as e:
-                if os.path.exists("auth0token.json"):
-                    os.remove("auth0token.json")
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            creds = flow.run_local_server(port=0)
-            with open("auth0token.json", "w") as token_file:
-                token_file.write(json.dumps(creds.to_json()))
-    
-    try:
-        service = build("calendar", "v3", credentials=creds)
-        event = {
-            "summary": task,
-            "location": "",
-            "description": "",
-            "colorId": 6,
-            "start": {
-                "dateTime": start_time + timeZone,
-            },
-            "end": {
-                "dateTime": end_time + timeZone,
-            },
-        }
-        event = service.events().insert(calendarId="primary", body=event).execute()
-        print(f"Event Created {event.get('htmlLink')}")
-        return jsonify({"message": "Event Successfully Added to Calendar"})
-    except HttpError as error:
-        print("An error occurred:", error)
-        return jsonify({"error": str(error)}), 500
+    if request.method == "POST":
+        data = request.json
+        event_title = data.get("title")
+        event_description = data.get("description")
+        
+        # Convert start_time to ISO format
+        start_time_str = data.get("start_time")
+        start_time = datetime.strptime(start_time_str, "%B %d @ %I:%M %p")
+        start_time_iso = start_time.strftime("%Y-%m-%dT%H:%M:%S")
+        
+        # Convert end_time to ISO format
+        end_time_str = data.get("end_time")
+        end_time = datetime.strptime(end_time_str, "%B %d @ %I:%M %p")
+        end_time_iso = end_time.strftime("%Y-%m-%dT%H:%M:%S")
+        
+        event_link = data.get("link")
+        print([event_title, event_description, start_time, end_time])
+        timeZone = "+05:30"  # Replace with your desired time zone
 
-    # Call the get_events function and render the template
-    events = get_events([
-        'https://climateaction.rutgers.edu/',
-        'https://rutgers.campuslabs.com/engage/events'
-    ])
-    
-    return render_template('events.html', events=events, format_str=format_str)
+        creds = None
+        if os.path.exists("token.json"):
+            creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    if os.path.exists("token.json"):
+                        os.remove("token.json")
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+                creds = flow.run_local_server(port=0)
+                with open("token.json", "w") as token:
+                    token.write(creds.to_json())
+
+        try:
+            service = build("calendar", "v3", credentials=creds)
+            event = {
+                "summary": event_title,
+                "location": "",
+                "description": event_description,
+                "colorId": 6,
+                "start": {
+                    "dateTime": start_time + timeZone,
+                },
+                "end": {
+                    "dateTime": end_time + timeZone,
+                },
+            }
+            print(event)
+            event = service.events().insert(calendarId="primary", body=event).execute()
+            print(f"Event Created {event.get('htmlLink')}")
+            return jsonify({"message": "Event Successfully Added to Calendar"})
+        except Exception as e:
+            print("An error occurred:", e)
+            return jsonify({"error": str(e)}), 500
+
+    else:
+        # URL of the website to scrape
+        urls = [
+            'https://climateaction.rutgers.edu/',
+            'https://rutgers.campuslabs.com/engage/events'
+        ]
+        events = get_events(urls)
+        format_str = lambda time_str: time_str.replace("T", " ").replace("-", "/")
+        print(events)
+        return render_template('events.html', events=events, format_str=format_str)
 
 
 def format_str(str):
