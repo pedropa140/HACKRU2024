@@ -2,16 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="/static/images/icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Event Signup</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Custom CSS */
+        body {
+            background-color: rgba(16, 16, 16, 0.8) !important; /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+            background-size: cover;
+        }
+
+        /* Additional styling for the content */
+        .container {
+            /* background-color: rgba(255, 255, 255, 0.8); Adjust opacity as needed */
+            padding: 20px;
+            border-radius: 10px;
+            display: flex; /* Change display property to flex */
+            flex-wrap: wrap; /* Allow wrapping of cards */
+            justify-content: flex-start; /* Horizontally center cards */
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity as needed */
+            border-radius: 10px;
+            margin: 10px; /* Add margin to create space between cards */
+            width: calc(50% - 20px); /* Set a fixed width for each card */
+        }
+
+        .card-title {
+            text-align: center;
+            position: relative;
+            font-size: 24px;
+            padding: 10px 0;
+        }
+
+        /* .card-text {
+
+        } */
+
+        .list-group-item {
+            border: none;
+        }
+
+        .card-title {
+            text-align: center; /* Center the card title */
+            position: relative; /* Add position relative to the title container */
+        }
+
     </style>
 </head>
 <header>
     {% include 'navbar.html' %}
 </header>
 <body>
-    
+    <h1 class="text-white" style="text-align: center; position: relative; padding-bottom: 10px;">Sign up for available events</h1>
+    <div class="container">
+        {% for event in events %}
+        <div class="card">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-white bg-success"><h2 class="card-title">{{ event.title }}</h2></li>
+                <li class="list-group-item">
+                    <p class="card-text"><b>Description</b>: {% set sentences = event.description.split('.')[:2] %}{{ ' '.join(sentences) }}</p>
+                    <p class="card-text"><b>Start Time</b>: {{ event.start_time }}</p>
+                    <p class="card-text"><b>End Time</b>: {{ event.end_time }}</p>
+                    <p class="card-text"><b>Link</b>: <a href={{event.link}}>Click here to learn more!</a></p>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

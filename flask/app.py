@@ -149,7 +149,17 @@ def chatbot():
 
 @app.route('/events', methods=["GET", "POST"])
 def prodev():
-    return render_template("events.html")
+    # URL of the website to scrape
+    #url = ''  # Replace with the actual URL of the website
+
+    # Scrape events using the scrape() method
+    events = get_events([
+        'https://climateaction.rutgers.edu/',
+        'https://rutgers.campuslabs.com/engage/events'
+    ])
+
+    # Render the scraped events using the scrape-events.html template
+    return render_template('events.html', events=events)
 
 @app.route('/scrape-events')
 def scrape_events():
