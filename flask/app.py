@@ -273,7 +273,7 @@ def generate_scheduling_query(tasks):
     print(current_time_str)
     query = "Today is " + current_time_str + "\n"
     query += """
-    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule.
+    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. 
     DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
     As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
     Do not create any imaginary tasks and do not modify them, stick to the users input, and make sure unique tasks are kept separate and included.
