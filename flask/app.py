@@ -237,48 +237,48 @@ def chatbot():
 @app.route('/events', methods=["GET", "POST"])
 def events():
     # URL of the website to scrape
-    #url = ''  # Replace with the actual URL of the website
+    # url = ''  # Replace with the actual URL of the website
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                if os.path.exists("auth0token.json"):
+                    os.remove("auth0token.json")
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            creds = flow.run_local_server(port=0)
+            with open("auth0token.json", "w") as token_file:
+                token_file.write(json.dumps(creds.to_json()))
+    
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        event = {
+            "summary": task,
+            "location": "",
+            "description": "",
+            "colorId": 6,
+            "start": {
+                "dateTime": start_time + timeZone,
+            },
+            "end": {
+                "dateTime": end_time + timeZone,
+            },
+        }
+        event = service.events().insert(calendarId="primary", body=event).execute()
+        print(f"Event Created {event.get('htmlLink')}")
+        return jsonify({"message": "Event Successfully Added to Calendar"})
+    except HttpError as error:
+        print("An error occurred:", error)
+        return jsonify({"error": str(error)}), 500
 
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                try:
-                    creds.refresh(Request())
-                except Exception as e:
-                    if os.path.exists("auth0token.json"):
-                        os.remove("auth0token.json")
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-                creds = flow.run_local_server(port=0)
-
-                with open("auth0token.json", "w") as token_file:
-                    token_file.write(json.dumps(creds.to_json()))
-
-        try:
-            service = build("calendar", "v3", credentials=creds)
-            event = {
-                "summary": task,
-                "location": "",
-                "description": "",
-                "colorId": 6,
-                "start": {
-                    "dateTime": start_time + timeZone,
-                },
-                "end": {
-                    "dateTime": end_time + timeZone,
-                },
-            }
-            event = service.events().insert(calendarId="primary", body=event).execute()
-            print(f"Event Created {event.get('htmlLink')}")
-            return jsonify({"message": "Event Successfully Added to Calendar"})
-        except HttpError as error:
-            print("An error occurred:", error)
-            return jsonify({"error": str(error)}), 500
-    else:
-        events = get_events([
-            'https://climateaction.rutgers.edu/',
-            'https://rutgers.campuslabs.com/engage/events'
-        ])
-        return render_template('events.html', events=events, format_str=format_str)
+    # Call the get_events function and render the template
+    events = get_events([
+        'https://climateaction.rutgers.edu/',
+        'https://rutgers.campuslabs.com/engage/events'
+    ])
+    
+    return render_template('events.html', events=events, format_str=format_str)
 
 
 def format_str(str):
