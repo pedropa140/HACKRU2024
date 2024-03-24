@@ -141,6 +141,69 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             await message.channel.send(file=file, embed=embed)
             return
         
+        local_time = datetime.datetime.now()
+        local_timezone = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo
+        current_time = datetime.datetime.now(local_timezone)
+        timezone_offset = current_time.strftime('%z')
+        offset_string = list(timezone_offset)
+        offset_string.insert(3, ':')
+        timeZone = "".join(offset_string)
+        creds = None
+        if os.path.exists("token.json"):
+            creds = Credentials.from_authorized_user_file("token.json", SCOPES)        
+
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    if os.path.exists("token.json"):
+                        os.remove("token.json")
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+                creds = flow.run_local_server(port = 0)
+
+                with open("token.json", "w") as token:
+                    token.write(creds.to_json())
+        service = build("calendar", "v3", credentials = creds)
+        now = datetime.datetime.now().isoformat() + "Z"
+        datetime_stuff = datetime.datetime.now()
+        today_date = f'{datetime_stuff.year}-{datetime_stuff.month}-{datetime_stuff.day}T'
+        event_result = service.events().list(calendarId = "primary", timeMin=now, maxResults = 10, singleEvents = True, orderBy = "startTime").execute()
+        taskSummary = addtask_action_content
+        taskStart = addtask_start_action_content
+        taskEnd = addtask_end_action_content
+        print(taskSummary)
+        print(taskStart)
+        print(taskEnd)
+        
+        # event = {
+        #     "summary": taskSummary,
+        #     "location": "",
+        #     "description": "",
+        #     "colorId": 6,
+        #     "start": {
+        #         "dateTime": taskStart + timeZone,
+        #     },
+
+        #     "end": {
+        #         "dateTime": taskEnd + timeZone,
+        #     },
+        # }
+        event = {
+            'summary': taskSummary,
+            'start': {
+                'dateTime': taskStart,
+                'timeZone': 'America/New_York',  # Set timezone to New York
+            },
+            'end': {
+                'dateTime': taskEnd,
+                'timeZone': 'America/New_York',  # Set timezone to New York
+            },
+        }
+        event = service.events().insert(calendarId = "primary", body = event).execute()
+        print(f"Event Created {event.get('htmlLink')}")
+
         userDatabase.add_task(str(message.author.id), addtask_action_content, addtask_start_action_content, addtask_end_action_content)
         result_title = f'**Task Created**'
         result_description = 'Task Description:'
@@ -174,7 +237,7 @@ async def todaytask(message : discord.message.Message, client : discord.Client, 
         data = userDatabase.get_tasks_by_id(str(message.author.id))
         def convert_to_datetime(date_str):
             try:
-                return datetime.datetime.strptime(date_str, "%Y%m%dT%H:%M:%S")
+                return datetime.datetime.strptime(date_str, "%Y%m%datetime%H:%M:%S")
             except ValueError:
                 print(f"Error: Invalid date string encountered: {date_str}")
                 return None
@@ -207,7 +270,7 @@ async def alltask(message : discord.message.Message, client : discord.Client, us
         data = userDatabase.get_tasks_by_id(str(message.author.id))
         def convert_to_datetime(date_str):
             try:
-                return datetime.datetime.strptime(date_str, "%Y%m%dT%H:%M:%S")
+                return datetime.datetime.strptime(date_str, "%Y%m%datetime%H:%M:%S")
             except ValueError:
                 print(f"Error: Invalid date string encountered: {date_str}")
                 return None
@@ -301,7 +364,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         data = userDatabase.get_tasks_by_id(str(message.author.id))
         def convert_to_datetime(date_str):
             try:
-                return datetime.datetime.strptime(date_str, "%Y%m%dT%H:%M:%S")
+                return datetime.datetime.strptime(date_str, "%Y%m%datetime%H:%M:%S")
             except ValueError:
                 print(f"Error: Invalid date string encountered: {date_str}")
                 return None
