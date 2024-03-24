@@ -175,7 +175,7 @@ def authorized():
     
     global user_logged_in
     user_logged_in = True
-    return redirect(url_for('chatbot'))
+    return redirect(url_for('carbon'))
 
 @app.route("/logout")
 def logout():
@@ -501,12 +501,14 @@ def carbon():
     if request.method == "POST":
         shower_minutes = int(request.form.get("shower_minutes"))
         daily_driving_distance = int(request.form.get("daily_driving_distance"))
+        meat_consumption = int(request.form.get("meat_consumption"))
 
         # Calculate carbon footprint
-        shower_carbon = shower_minutes * 600  # grams CO2e
+        shower_carbon = shower_minutes * 60  # grams CO2e
         driving_carbon = daily_driving_distance * 10  # grams CO2e
+        meat_carbon = meat_consumption *50
 
-        total_carbon = shower_carbon + driving_carbon
+        total_carbon = shower_carbon + driving_carbon + meat_carbon
 
         return render_template("carbon.html", total_carbon=total_carbon, meat_carbon=meat_carbon, shower_carbon=shower_carbon, driving_carbon=driving_carbon)
     else:
