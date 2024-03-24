@@ -235,18 +235,51 @@ def chatbot():
         return render_template("chatbot.html", question_response=question_response, user_logged_in=user_logged_in)
 
 @app.route('/events', methods=["GET", "POST"])
-def prodev():
+def events():
     # URL of the website to scrape
     #url = ''  # Replace with the actual URL of the website
 
-    # Scrape events using the scrape() method
-    events = get_events([
-        'https://climateaction.rutgers.edu/',
-        'https://rutgers.campuslabs.com/engage/events'
-    ])
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    if os.path.exists("auth0token.json"):
+                        os.remove("auth0token.json")
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+                creds = flow.run_local_server(port=0)
 
-    # Render the scraped events using the scrape-events.html template
-    return render_template('events.html', events=events, format_str=format_str)
+                with open("auth0token.json", "w") as token_file:
+                    token_file.write(json.dumps(creds.to_json()))
+
+        try:
+            service = build("calendar", "v3", credentials=creds)
+            event = {
+                "summary": task,
+                "location": "",
+                "description": "",
+                "colorId": 6,
+                "start": {
+                    "dateTime": start_time + timeZone,
+                },
+                "end": {
+                    "dateTime": end_time + timeZone,
+                },
+            }
+            event = service.events().insert(calendarId="primary", body=event).execute()
+            print(f"Event Created {event.get('htmlLink')}")
+            return jsonify({"message": "Event Successfully Added to Calendar"})
+        except HttpError as error:
+            print("An error occurred:", error)
+            return jsonify({"error": str(error)}), 500
+    else:
+        events = get_events([
+            'https://climateaction.rutgers.edu/',
+            'https://rutgers.campuslabs.com/engage/events'
+        ])
+        return render_template('events.html', events=events, format_str=format_str)
+
 
 def format_str(str):
     return format_date_time(str)
@@ -273,15 +306,18 @@ def generate_scheduling_query(tasks):
     print(current_time_str)
     query = "Today is " + current_time_str + "\n"
     query += """
-    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. Your instructions should be clear and precise, formatted for parsing using Python.
-    DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
-    Make sure to include all inputs as tasks from the user.
+    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user, including shorter shower times. Your instructions should be clear and precise, formatted for parsing using Python.
+        Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
+        DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
     As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
-    Do not create any imaginary tasks, stick to the users input, and make sure that all input is accounted for in the final response.
+    Do not create any imaginary tasks and do not modify them, stick to the users input, and make sure unique tasks are kept separate and included.
         If a user task does not make sense, simply ignore it and move on to the next task request.
         Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
     When setting 'task' do not include the time, that will be it's own parameter.
+    
+    Start time: "YYYY-MM-DDTHH:MM"
+    End time: "YYYY-MM-DDTHH:MM"
 
     You are not allowed to break the following formatting:
     task = "task_name"
@@ -294,6 +330,7 @@ def generate_scheduling_query(tasks):
     Avoid scheduling events during the user's designated sleeping hours.
     Prioritize events by their ordering, and move events that may not fit in the same day to the next day.
     Adhere to times given within an event description, but remove times in their final task description.
+    Please do not add anything beyond above, do not add a trailing or beginning message please.
     The tasks requested are as follows:\n
     """
     taskss =""
@@ -305,7 +342,7 @@ def generate_scheduling_query(tasks):
         { "role": "user", "content": taskss}
     ]
     result_dictionary = cloudflare.run("@cf/meta/llama-2-7b-chat-int8", inputs)
-    # print(result_dictionary)
+    print(result_dictionary)
     result_result = result_dictionary['result']
     result_response = result_result['response']
     return result_response
@@ -340,7 +377,7 @@ def sustainabilityplanner():
                 meep2 = lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00"
                 print(meep2)
                 meep3 = lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
-                print(meep3)
+                print(meep3 + "1")
                 task_info = {
                     "task": meep,
                     "start_time": meep2,
@@ -423,6 +460,25 @@ def sustainabilityplanner():
     else:
         return render_template("sustainabilityplanner.html")
 
+@app.route("/cal")
+def cal():
+    return render_template("cal.html")
+
+@app.route("/carbon", methods=["GET", "POST"])
+def carbon():
+    if request.method == "POST":
+        shower_minutes = int(request.form.get("shower_minutes"))
+        daily_driving_distance = int(request.form.get("daily_driving_distance"))
+
+        # Calculate carbon footprint
+        shower_carbon = shower_minutes * 600  # grams CO2e
+        driving_carbon = daily_driving_distance * 10  # grams CO2e
+
+        total_carbon = shower_carbon + driving_carbon
+
+        return render_template("carbon.html", total_carbon=total_carbon)
+    else:
+        return render_template("carbon.html", total_carbon=None)
 
 init_db()
 if __name__ == "__main__":

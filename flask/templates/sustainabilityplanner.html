@@ -99,12 +99,30 @@
             cursor: not-allowed; /* Show disabled cursor */
             opacity: 0.6; /* Reduce opacity for a disabled look */
         }
+        
+        /* Custom styles for the alert box */
+.alert-custom {
+    background-color: rgba(0, 0, 0, 1); /* Darkened background */
+    border-radius: 0.5rem; /* Rounded corners */
+    color: #fff; /* Text color */
+}
+
+.alert-custom .alert-content {
+    padding: 1rem; /* Padding for content */
+}
+
+/* Close button styles */
+.btn-close {
+    color: #fff; /* Close button color */
+    font-size: 1.5rem; /* Close button size */
+}
+
 
     </style>
 </head>
 <body class="d-flex justify-content-center">
     <header class='flex-col'>
-        {% include 'navbar.html' %}
+        {% include 'navbar-auth.html' %}
     </header>
     <div class="flex-col p-4 w-75 justify-content-center" style="margin-top: 60px;">
         <div class="d-flex align-items-center m-3">
@@ -132,11 +150,11 @@
             <input type="text" id="task" class="form-control rounded-start" placeholder="Enter your task">
             <button class="btn btn-success rounded-end" type="button" onclick="addTask()">Add Task</button>
         </div>
-        <div id="taskList" class="card-container rounded-6">
+        <div id="taskList" class="card-container rounded-6 flex">
             <!-- Cards will be added here dynamically -->
         </div>
         <div id="submitBtn" style="display: none;">
-            <button class="btn btn-primary" onclick="submitTasks()">Submit Tasks</button>
+            <button class="btn btn-success w-auto bg-grad" onclick="submitTasks()">Submit Tasks</button>
         </div>
         </div>
     </div>
@@ -260,6 +278,8 @@
             return finalURL;
         }
         
+        
+    
 
         function createDeleteButton(listItem) {
             var deleteBtn = document.createElement("button");
@@ -276,7 +296,6 @@
         function toggleSubmitBtn() {
             document.getElementById("submitBtn").style.display = tasksAdded >= 1 ? "block" : "none";
         }        
-        
 
         function submitTasks() {
             var tasks = Array.from(document.querySelectorAll(".card-title")).map(task => task.textContent);
@@ -287,14 +306,45 @@
                 },
                 body: JSON.stringify({ tasks: tasks }),
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            .then(response => response.json())
+            .then(data => {
+                // Create a Bootstrap alert box
+                var alertBox = document.createElement("div");
+                alertBox.className = "alert alert-dismissible fade show position-fixed top-50 start-50 translate-middle alert-custom";
+                alertBox.role = "alert";
+        
+                // Add alert message content
+                alertBox.innerHTML = `
+                    <div class="alert-content">
+                        <strong>${data.message}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+        
+                // Append the alert box to the body
+                document.body.appendChild(alertBox);
+        
+                // Add temporary shadow effect when alert appears
+                alertBox.classList.add("shadow");
+        
+                // Automatically close the alert after a few seconds (e.g., 5 seconds)
+                setTimeout(() => {
+                    alertBox.remove();
+                }, 5000);
+        
+                // Clear tasks if submission is successful
+                if (data.success) {
+                    document.getElementById("taskList").innerHTML = "";
+                    tasksAdded = 0;
+                    toggleSubmitBtn();
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
+        
+
     </script>
 </body>
 </html>

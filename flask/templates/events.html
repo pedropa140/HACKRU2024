@@ -64,7 +64,7 @@
     </style>
 </head>
 <header>
-    {% include 'navbar.html' %}
+    {% include 'navbar-auth.html' %}
 </header>
 <body>
     <h1 class="text-success display-3" style="text-align: center; position: relative; padding-top: 100px; font-family: Edu NSW ACT Foundation, cursive">Sign up for available events!</h1>
@@ -89,8 +89,11 @@
     <script>
         const arr = ["Livingston Student Center", "Busch Student Center", "College Ave Student Center", "Cook Student Center", "Douglass Student Center"]
         
-        function attendEvent(name, description, startTime, endTime, timezone) {
-            // Make an AJAX request to the server to submit the event name
+        function attendEvent(name, description, dateTime, location, timezone) {
+            // Split the dateTime string into start_time and end_time
+            const [start_time, end_time] = dateTime.split('-');
+        
+            // Make an AJAX request to the server to submit the event details
             const randomNumber = Math.floor(Math.random() * 5);
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/events", true);
@@ -104,8 +107,9 @@
                     }
                 }
             };
-            xhr.send(JSON.stringify({ name: name, description: description, location: arr[randomNumber], startTime: startTime, endTime: endTime, timezone: timezone }));
+            xhr.send(JSON.stringify({ name: name, description: description, location: location, start_time: start_time, end_time: end_time, timezone: timezone }));
         }
+        
     </script>
 </body>
 </html>
