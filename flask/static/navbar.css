@@ -13,6 +13,12 @@
     font-family: 'Bebas Neue', sans-serif;
 }
 
+.nav-item:hover {
+    background-color: #28a745; /* Green color */
+    color: #fff; /* White text color */
+    padding-left: 3rem;
+}
+
 .nav-item {
     font-family: 'Bebas Neue', sans-serif;
 }
