@@ -79,7 +79,7 @@
                     <p class="card-text"><b>Link</b>: <a href={{event.link}}>Click here to learn more!</a></p>
                     {% set start_str = format_str(event.start_time) %}
                     {% set end_str = format_str(event.end_time) %}
-                    <button type="button" class="btn btn-info" onclick="attendEvent('{{ event.title }}', '{{ event.description }}', '{{ start_str }}', '{{ end_str }}', '${+5:30}')">Add to Google Calendar!</button>
+                    <button type="button" class="btn btn-info" onclick="attendEvent('{{ event.title }}', '{{ '' }}', '{{ event.start_time }}', '{{ event.end_time }}', '${+05:30}')">Add to Google Calendar!</button>
                 </li>
             </ul>
         </div>
@@ -88,9 +88,9 @@
     <script>
         const arr = ["Livingston Student Center", "Busch Student Center", "College Ave Student Center", "Cook Student Center", "Douglass Student Center"]
         
-        function attendEvent(name, description, dateTime, location, timezone) {
+        function attendEvent(name, description, start_time, end_time, timezone) {
             // Split the dateTime string into start_time and end_time
-            const [start_time, end_time] = dateTime.split('-');
+            // const [start_time, end_time] = dateTime.split('-');
         
             // Make an AJAX request to the server to submit the event details
             const randomNumber = Math.floor(Math.random() * 5);
@@ -106,7 +106,7 @@
                     }
                 }
             };
-            xhr.send(JSON.stringify({ name: name, description: description, location: location, start_time: start_time, end_time: end_time, timezone: timezone }));
+            xhr.send(JSON.stringify({ name: name, description: description, location: arr[randomNumber], start_time: start_time, end_time: end_time, timezone: timezone }));
         }
         
     </script>
