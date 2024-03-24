@@ -494,12 +494,15 @@ def carbon():
     if request.method == "POST":
         shower_minutes = int(request.form.get("shower_minutes"))
         daily_driving_distance = int(request.form.get("daily_driving_distance"))
+        meat_consumption = int(request.form.get("meat_consumption"))
+
 
         # Calculate carbon footprint
-        shower_carbon = shower_minutes * 600  # grams CO2e
+        shower_carbon = shower_minutes * 6  # grams CO2e
         driving_carbon = daily_driving_distance * 10  # grams CO2e
+        meat_carbon = meat_consumption * 50  # Assume 50g CO2e per gram of meat
 
-        total_carbon = shower_carbon + driving_carbon
+        total_carbon = shower_carbon + driving_carbon + meat_carbon
 
         return render_template("carbon.html", total_carbon=total_carbon)
     else:
