@@ -235,18 +235,69 @@ def chatbot():
         return render_template("chatbot.html", question_response=question_response, user_logged_in=user_logged_in)
 
 @app.route('/events', methods=["GET", "POST"])
+@app.route("/prodev", methods=["GET", "POST"])
 def prodev():
-    # URL of the website to scrape
-    #url = ''  # Replace with the actual URL of the website
+    if request.method == "POST":
+        data = request.json
+        task = data.get("task")
+        start_time = data.get("start_time")
+        end_time = data.get("end_time")
+        timeZone = data.get("timezone")
+        
+        local_time = dt.datetime.now()
+        local_timezone = dt.datetime.now(dt.timezone.utc).astimezone().tzinfo
+        current_time = dt.datetime.now(local_timezone)
+        timezone_offset = current_time.strftime('%z')
+        offset_string = list(timezone_offset)
+        offset_string.insert(3, ':')
+        timeZone = "".join(offset_string)
+        creds = None
+        if os.path.exists("auth0token.json"):
+            with open("auth0token.json", "r") as token_file:
+                creds_data = json.load(token_file)
+                creds = Credentials.from_authorized_user_info(creds_data)
 
-    # Scrape events using the scrape() method
-    events = get_events([
-        'https://climateaction.rutgers.edu/',
-        'https://rutgers.campuslabs.com/engage/events'
-    ])
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    if os.path.exists("auth0token.json"):
+                        os.remove("auth0token.json")
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+                creds = flow.run_local_server(port=0)
 
-    # Render the scraped events using the scrape-events.html template
-    return render_template('events.html', events=events, format_str=format_str)
+                with open("auth0token.json", "w") as token_file:
+                    token_file.write(json.dumps(creds.to_json()))
+
+        try:
+            service = build("calendar", "v3", credentials=creds)
+            event = {
+                "summary": task,
+                "location": "",
+                "description": "",
+                "colorId": 6,
+                "start": {
+                    "dateTime": start_time + timeZone,
+                },
+                "end": {
+                    "dateTime": end_time + timeZone,
+                },
+            }
+            event = service.events().insert(calendarId="primary", body=event).execute()
+            print(f"Event Created {event.get('htmlLink')}")
+            return jsonify({"message": "Event Successfully Added to Calendar"})
+        except HttpError as error:
+            print("An error occurred:", error)
+            return jsonify({"error": str(error)}), 500
+    else:
+        events = get_events([
+            'https://climateaction.rutgers.edu/',
+            'https://rutgers.campuslabs.com/engage/events'
+        ])
+        return render_template('events.html', events=events, format_str=format_str)
+
 
 def format_str(str):
     return format_date_time(str)
