@@ -247,8 +247,6 @@
             return card;
         }
         
-               
-        
         function fetchImageURL(keyword) {
             // Base URL for Unsplash images
             var baseAPIUrl = 'https://source.unsplash.com/';
@@ -275,16 +273,9 @@
             return deleteBtn;
         }
 
-        function toggleSubmitBtn(disabled) {
-            var submitBtn = document.getElementById("submitBtn");
-            if (disabled) {
-                submitBtn.disabled = true;
-                submitBtn.classList.add("disabled-btn");
-            } else {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove("disabled-btn");
-            }
-        }
+        function toggleSubmitBtn() {
+            document.getElementById("submitBtn").style.display = tasksAdded >= 1 ? "block" : "none";
+        }        
         
 
         function submitTasks() {
