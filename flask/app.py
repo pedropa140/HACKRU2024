@@ -331,18 +331,15 @@ def generate_scheduling_query(tasks):
     print(current_time_str)
     query = "Today is " + current_time_str + "\n"
     query += """
-    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user, including shorter shower times. Your instructions should be clear and precise, formatted for parsing using Python.
+    As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user. Your instructions should be clear and precise to the instructions below.
+        INCLUDE ALL TASKS PASSED BY THE USER.
         Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
         DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
+        If a task is not given a time, manage the times, but do not override user specified times.
     As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
-    Do not create any imaginary tasks and do not modify them, stick to the users input, and make sure unique tasks are kept separate and included.
-        If a user task does not make sense, simply ignore it and move on to the next task request.
         Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
     When setting 'task' do not include the time, that will be it's own parameter.
-    
-    Start time: "YYYY-MM-DDTHH:MM"
-    End time: "YYYY-MM-DDTHH:MM"
 
     You are not allowed to break the following formatting:
     task = "task_name"
@@ -356,10 +353,11 @@ def generate_scheduling_query(tasks):
     Prioritize events by their ordering, and move events that may not fit in the same day to the next day.
     Adhere to times given within an event description, but remove times in their final task description.
     Please do not add anything beyond above, do not add a trailing or beginning message please.
-    The tasks requested are as follows:\n
+    Here are the user provided tasks:
     """
     taskss =""
     for task in tasks:
+        print(task)
         taskss+=f"'{task}'\n"
     print(taskss)
     inputs = [
@@ -370,6 +368,7 @@ def generate_scheduling_query(tasks):
     print(result_dictionary)
     result_result = result_dictionary['result']
     result_response = result_result['response']
+    print(result_response)
     return result_response
 
 @app.route("/sustainabilityplanner", methods=["GET", "POST"])
@@ -392,8 +391,13 @@ def sustainabilityplanner():
         
         print(len(lines))
         print(lines)
+        
+        if lines[0].startswith('task'):
+            start_index = 0
+        else:
+            start_index = 1
 
-        for x in range(1, len(lines)-2, 3):
+        for x in range(start_index, len(lines)-2, 3):
             if lines[x] == '': continue
             else:
                 print(lines[x])
@@ -494,15 +498,12 @@ def carbon():
     if request.method == "POST":
         shower_minutes = int(request.form.get("shower_minutes"))
         daily_driving_distance = int(request.form.get("daily_driving_distance"))
-        meat_consumption = int(request.form.get("meat_consumption"))
-
 
         # Calculate carbon footprint
-        shower_carbon = shower_minutes * 6  # grams CO2e
+        shower_carbon = shower_minutes * 600  # grams CO2e
         driving_carbon = daily_driving_distance * 10  # grams CO2e
-        meat_carbon = meat_consumption * 50  # Assume 50g CO2e per gram of meat
 
-        total_carbon = shower_carbon + driving_carbon + meat_carbon
+        total_carbon = shower_carbon + driving_carbon
 
         return render_template("carbon.html", total_carbon=total_carbon)
     else:
