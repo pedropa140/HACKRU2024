@@ -237,22 +237,27 @@ def chatbot():
 @app.route('/events', methods=["GET", "POST"])
 def events():
     if request.method == "POST":
+
+        def format_str(str):
+            return format_date_time(str)
         data = request.json
-        event_title = data.get("title")
+        print(data.get("name"))
+        event_title = data.get("name")
         event_description = data.get("description")
         
         # Convert start_time to ISO format
-        start_time_str = data.get("start_time")
-        start_time = datetime.strptime(start_time_str, "%B %d @ %I:%M %p")
-        start_time_iso = start_time.strftime("%Y-%m-%dT%H:%M:%S")
+        start_time_str = format_str(data.get("start_time")) + ":00"
+        # print(start_time_str)
+        # start_time = datetime.strptime(start_time_str, "%B %d @ %I:%M %p")
+        # start_time_iso = start_time.strftime("%Y-%m-%dT%H:%M:%S")
         
         # Convert end_time to ISO format
-        end_time_str = data.get("end_time")
-        end_time = datetime.strptime(end_time_str, "%B %d @ %I:%M %p")
-        end_time_iso = end_time.strftime("%Y-%m-%dT%H:%M:%S")
+        end_time_str = format_str(data.get("end_time")) + ":00"
+        # end_time = datetime.strptime(end_time_str, "%B %d @ %I:%M %p")
+        # end_time_iso = end_time.strftime("%Y-%m-%dT%H:%M:%S")
         
         event_link = data.get("link")
-        print([event_title, event_description, start_time, end_time])
+        print([event_title, event_description, start_time_str, end_time_str])
         timeZone = "+05:30"  # Replace with your desired time zone
 
         creds = None
@@ -280,10 +285,10 @@ def events():
                 "description": event_description,
                 "colorId": 6,
                 "start": {
-                    "dateTime": start_time + timeZone,
+                    "dateTime": start_time_str + timeZone,
                 },
                 "end": {
-                    "dateTime": end_time + timeZone,
+                    "dateTime": end_time_str + timeZone,
                 },
             }
             print(event)
@@ -305,9 +310,6 @@ def events():
         print(events)
         return render_template('events.html', events=events, format_str=format_str)
 
-
-def format_str(str):
-    return format_date_time(str)
 
 @app.route('/scrape-events')
 def scrape_events():
