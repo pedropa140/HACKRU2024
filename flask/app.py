@@ -236,8 +236,6 @@ def sustainabilityplanner():
         
         x = 0
         lines = content.split('\n')
-        print(lines)
-        print(len(lines))
         schedule = []
 
         for x in range(1, len(lines)-2, 3):
@@ -249,7 +247,6 @@ def sustainabilityplanner():
                     "end_time": lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
                 }
                 schedule.append(task_info)
-                print(schedule)
 
         local_time = dt.datetime.now()
         local_timezone = dt.datetime.now(dt.timezone.utc).astimezone().tzinfo
