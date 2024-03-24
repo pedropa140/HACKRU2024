@@ -106,17 +106,37 @@ def mainpage():
 @app.route("/edu")
 def education():
     return render_template("education.html")
-    
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    global user_logged_in
     if request.method == "POST":
-        question_response = ("", "")
+        email = request.form.get("email")
+        passw = request.form.get("passw")
+        print(email)
+        print(passw)
+        db = get_db()
+        cursor = db.cursor()
 
-        return redirect("/edu")
-    else:
-        return render_template("signup.html")
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
 
-from flask import redirect, url_for, session
+        if not user:
+            return render_template("error.html")
+
+        if user[4] == passw:
+            session["user_id"] = user[0]
+            user_logged_in = True
+            return redirect(url_for("home"))
+        else:
+            return render_template("error.html")
+        
+    auth_params = {
+        "screen_hint": "signup"
+    }
+
+    return oauth.create_client("oauthApp").authorize_redirect(redirect_uri=url_for('authorized', _external=True), **auth_params)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

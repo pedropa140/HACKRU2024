@@ -32,14 +32,7 @@ crossorigin="anonymous"
       <div class="offcanvas-body flex fs-4">
         <ul class="flex navbar-nav flex-grow-1 p-4 ">
           <!-- Check if user is logged in -->
-          {% if user_logged_in %}
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{{ url_for('dashboard') }}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Logout</a>
-            </li>
-          {% else %}
+
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{{ url_for('mainpage') }}">Home</a>
             </li>
@@ -49,7 +42,6 @@ crossorigin="anonymous"
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="{{ url_for('signup') }}">Signup</a>
             </li>
-          {% endif %}
           <!-- Dropdown -->
         </ul>
       </div>
