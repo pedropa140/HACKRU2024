@@ -24,7 +24,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         result_title = f'**Name of the task you want to enter**'
         result_description = f'**Please enter the name of the task**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!addtask")
@@ -38,7 +38,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             # await message.channel.send(f'{message.author.mention} has taken too long to respond.')
             string = f'{message.author.mention} has taken too long to respond.'
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!addtask")
@@ -48,7 +48,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         result_title = f'**Task Start Time**'
         result_description = f'What time does this task start?**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
@@ -60,7 +60,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         try:
             addtask_start_action_content = addtask_start_action.content
             def validate_time(time_str):
-                pattern = r'^(\d{4})(\d{2})(\d{2})T(\d{2}):(\d{2}):(\d{2})$'
+                pattern = r'^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$'
                 match = re.match(pattern, time_str)                
                 if not match:
                     return False
@@ -73,12 +73,12 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
             check = validate_time(addtask_start_action_content)
             if not check:
                 result_title = f'Invalid Output'
-                result_description = f'Time should be in **YEARMONTHDATETHOUR:MINUTE:SECONDS** format for **{message.author.mention}**'
+                result_description = f'Time should be in **YEAR-MONTH-DATETHOUR:MINUTE:SECONDS** format for **{message.author.mention}**'
                 embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-                file = discord.File('images/icon.png', filename='icon.png')
+                file = discord.File('static/Images/icon.png', filename='icon.png')
                 embed.set_thumbnail(url='attachment://icon.png')
                 embed.set_author(name="Reminder-Bot says:")
-                embed.add_field(name="Please enter in {YEAR}{MONTH}{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 20240325T16:45:00")
+                embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
                 embed.set_footer(text="!changereminder")
                 await message.channel.send(file=file, embed=embed)
                 return
@@ -86,7 +86,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         except asyncio.TimeoutError:
             string = f'{message.author.mention} has taken too long to respond.'
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!addtask")
@@ -96,10 +96,10 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         result_title = f'**Task End Time**'
         result_description = f'What time does this task end?**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
-        embed.add_field(name="Please enter in {YEAR}{MONTH}{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 20240325T16:45:00")
+        embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
         embed.set_footer(text="!addtask")
         await message.channel.send(file=file, embed=embed)
         def check(m):
@@ -108,7 +108,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         try:
             addtask_end_action_content = addtask_end_action.content
             def validate_time(time_str):
-                pattern = r'^(\d{4})(\d{2})(\d{2})T(\d{2}):(\d{2}):(\d{2})$'
+                pattern = r'^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$'
                 match = re.match(pattern, time_str)                
                 if not match:
                     return False
@@ -123,10 +123,10 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
                 result_title = f'Invalid Output'
                 result_description = f'Time should be in **YEARMONTHDATETHOUR:MINUTE:SECONDS** format for **{message.author.mention}**'
                 embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-                file = discord.File('images/icon.png', filename='icon.png')
+                file = discord.File('static/Images/icon.png', filename='icon.png')
                 embed.set_thumbnail(url='attachment://icon.png')
                 embed.set_author(name="Reminder-Bot says:")
-                embed.add_field(name="Please enter in {YEAR}{MONTH}{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 20240325T16:45:00")
+                embed.add_field(name="Please enter in {YEAR}-{MONTH}-{DAY}T{HOUR}:{MINUTE}:{SECOND}", value="EXAMPLE: 2024-03-25T16:45:00")
                 embed.set_footer(text="!changereminder")
                 await message.channel.send(file=file, embed=embed)
                 return
@@ -134,7 +134,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         except asyncio.TimeoutError:
             string = f'{message.author.mention} has taken too long to respond.'
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!addtask")
@@ -147,7 +147,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
 
         description = userDatabase.get_task_by_name(addtask_action_content)
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.add_field(name="Task Name", value=description[1], inline=False)
@@ -163,7 +163,7 @@ async def addtask(message : discord.message.Message, client : discord.Client, us
         result_title = f'Account Not Found'
         result_description = f'User not found for for **{message.author.mention}**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!addtask")
@@ -184,7 +184,7 @@ async def todaytask(message : discord.message.Message, client : discord.Client, 
         result_title = f'**Today Tasks:**'
         result_description = f'**{message.author.mention}\'s tasks**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         for item in sorted_data:
@@ -196,7 +196,7 @@ async def todaytask(message : discord.message.Message, client : discord.Client, 
         result_title = f'Account Not Found'
         result_description = f'User not found for for **{message.author.mention}**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!todaytask")
@@ -216,7 +216,7 @@ async def alltask(message : discord.message.Message, client : discord.Client, us
         result_title = f'**All Tasks:**'
         result_description = f'**{message.author.mention}\'s tasks**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         for item in sorted_data:
@@ -228,7 +228,7 @@ async def alltask(message : discord.message.Message, client : discord.Client, us
         result_title = f'Account Not Found'
         result_description = f'User not found for for **{message.author.mention}**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!alltasks")
@@ -240,7 +240,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
         result_title = f'**Name of the task you want to delete**'
         result_description = f'**Please enter the name of the task**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         for i in listTasks:
@@ -256,7 +256,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
         except asyncio.TimeoutError:
             string = f'{message.author.mention} has taken too long to respond.'
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -272,7 +272,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
             result_title = f'**Task Deleted**'
             result_description = f'{removetask_action_content} has been deleted/'
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -281,7 +281,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
             result_title = f'**Error**'
             result_description = f'{removetask_action_content} was not found. Please try again.'
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -290,7 +290,7 @@ async def removetask(message : discord.message.Message, client : discord.Client,
         result_title = f'Account Not Found'
         result_description = f'User not found for for **{message.author.mention}**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!removetask")
@@ -310,7 +310,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         result_title = f'**Name of the task you want to update**'
         result_description = f'**Please enter the name of the task**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         for i in sorted_data:
@@ -326,7 +326,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         except asyncio.TimeoutError:
             string = f'{message.author.mention} has taken too long to respond.'
             embed = discord.Embed(title= "Timeout Error", description=string, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -342,7 +342,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
             result_title = f'**Task Updated**'
             result_description = f'{removetask_action_content} has been updated/'
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -351,7 +351,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
             result_title = f'**Error**'
             result_description = f'{removetask_action_content} was not found. Please try again.'
             embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-            file = discord.File('images/icon.png', filename='icon.png')
+            file = discord.File('static/Images/icon.png', filename='icon.png')
             embed.set_thumbnail(url='attachment://icon.png')
             embed.set_author(name="Reminder-Bot says:")
             embed.set_footer(text="!removetask")
@@ -360,7 +360,7 @@ async def completetask(message : discord.message.Message, client : discord.Clien
         result_title = f'Account Not Found'
         result_description = f'User not found for for **{message.author.mention}**'
         embed = discord.Embed(title=result_title, description=result_description, color=0xFF5733)
-        file = discord.File('images/icon.png', filename='icon.png')
+        file = discord.File('static/Images/icon.png', filename='icon.png')
         embed.set_thumbnail(url='attachment://icon.png')
         embed.set_author(name="Reminder-Bot says:")
         embed.set_footer(text="!completetask")
