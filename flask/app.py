@@ -15,6 +15,16 @@ from authlib.integrations.flask_client import OAuth
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 
+from google.auth import load_credentials_from_file
+from google.oauth2 import credentials
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google.generativeai import generative_models
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+from googleapiclient.errors import HttpError
+
 API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
 headers = {"Authorization": "Bearer wkd748PVSeSQRk2iQSS-eb8rB25ihto-296YmYAD"}
 
@@ -91,14 +101,11 @@ def login():
         else:
             return render_template("error.html")
 
-    # If it's a GET request, initiate the OAuth authorization process
     return oauth.create_client("oauthApp").authorize_redirect(redirect_uri=url_for('authorized', _external=True))
 
 @app.route('/authorized')
 def authorized():
     token = oauth.oauthApp.authorize_access_token()
-    # Fetch user profile using the token and store user information in the session or database
-    # Redirect to the home page or profile page after successful login
     return redirect(url_for('chatbot'))
 
 
@@ -167,13 +174,10 @@ def prodev():
 
 def generate_scheduling_query(tasks):
     
-    # Get the current time
     current_time = datetime.now()
 
-    # Format the current time as a string in the format YYYY-MM-DD HH:MM
     current_time_str = current_time.strftime("%Y-%m-%d %H:%M")
     print(current_time_str)
-    # Provide the current time to the AI for scheduling tasks
     query = "Today is " + current_time_str + "\n"
     query += """
     As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. Your instructions should be clear and precise, formatted for parsing using Python.
@@ -205,18 +209,16 @@ def generate_scheduling_query(tasks):
     for task in tasks:
         taskss+=f"'{task}'\n"
     print(taskss)
-    model = genai.GenerativeModel('models/gemini-pro')
-    result = model.generate_content(query + taskss)
+    # model = genai.GenerativeModel('models/gemini-pro')
+    # result = model.generate_content(query + taskss)
+    
     return result
 
 @app.route("/sustainabilityplanner", methods=["GET", "POST"])
 def taskschedule():
     if request.method == "POST":
-        data = request.json  # Extract the JSON data sent from the frontend
-        tasks = data.get("tasks")  # Extract the "tasks" list from the JSON data
-        # Process the tasks data here
-        #print("Received tasks:", tasks)
-        # Optionally, you can store the tasks in a database or perform 
+        data = request.json
+        tasks = data.get("tasks")
         stripTasks = []
         for i in tasks:
             i = i.replace('Delete Task', '')
@@ -224,7 +226,6 @@ def taskschedule():
         query_result = generate_scheduling_query(stripTasks)
         content = query_result.text
         content = '\n'.join([line for line in content.split('\n') if line.strip()])
-        # print(content)
         
         x = 0
         lines = content.split('\n')
@@ -279,32 +280,12 @@ def taskschedule():
                     start = event["start"].get("dateTime", event["start"].get("date"))
                     print(start, event["summary"])
 
-            # event = {
-            #     "summary": "My Python Event",
-            #     "location": "Somewhere Online",
-            #     "description": "",
-            #     "colorId": 6,
-            #     "start": {
-            #         "dateTime": "2024-02-11T09:00:00" + timeZone,
-            #     },
-
-            #     "end": {
-            #         "dateTime": "2024-02-11T17:00:00" + timeZone,
-            #     },
-            # }
-            # time.wait(5)
-
-            # event = service.events().insert(calendarId = "primary", body = event).execute()
-            # print(f"Event Created {event.get('htmlLink')}")
             print(schedule)
             for query in schedule:
                 print(query)
-            #     time.wait(5)
                 taskSummary = query['task']
                 taskStart = query['start_time']
                 taskEnd = query['end_time']
-                
-            #     # Add time zone offset to date-time strings (assuming they're in ET
                 
                 event = {
                     "summary": taskSummary,
@@ -313,20 +294,11 @@ def taskschedule():
                     "colorId": 6,
                     "start": {
                         "dateTime": taskStart + timeZone,
-                        # "timeZone": "Eastern Time"
                     },
 
                     "end": {
                         "dateTime": taskEnd + timeZone,
-                        # "timeZone": "Eastern Time"
                     },
-                    # "recurrence": [
-                    #     "RRULE: FREQ=DAILY;COUNT=3"
-                    # ],
-                    # "attendees": [
-                    #     {"email": "social@neuralnine.com"},
-                    #     {"email": "pedropa828@gmail.com"},
-                    # ]
                 }
 
 
@@ -339,8 +311,6 @@ def taskschedule():
         response = {
             "content": content
         }
-        #print(content)
-       # successString = "Tasks Successfully Added to Calendar"
         return jsonify({"message": "Tasks Successfully Added to Calendar"})    
     else:
         return render_template("sustainabilityplanner.html")
