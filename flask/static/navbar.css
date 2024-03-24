@@ -1,9 +1,20 @@
 @import url('../static/colors.css');
-@import url('../static/names.css');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 .btn-custom {
     color: var(--text-color);
     background-color: transparent;
     border-color: var(--primary-color);
+}
+
+.navbar-brand {
+    color: var(--primary-color);
+    font-style: bold;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.nav-item {
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 /* Optionally adjust hover and active states: */

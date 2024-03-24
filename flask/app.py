@@ -51,10 +51,15 @@ oauth.register(
 )
 
 
-app_name = "Green Habits"
 
 from flask import Flask, jsonify, request
 from cloudflare import run
+
+app_name = "Green Habits"
+
+@app.context_processor
+def inject_global_variable():
+    return dict(app_name=app_name)
 
 @app.route('/rank-keywords', methods=['POST'])
 def rank_keywords():
@@ -79,10 +84,6 @@ def rank_keywords():
 
     # Return the ranked keywords as JSON
     return jsonify({'keywords': response})
-
-@app.context_processor
-def inject_global_variable():
-    return dict(app_name=app_name)
 
 def get_db():
     db = getattr(g, '_database', None)
