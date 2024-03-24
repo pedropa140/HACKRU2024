@@ -303,14 +303,23 @@ def sustainabilityplanner():
         x = 0
         lines = content.split('\n')
         schedule = []
+        print(len(lines))
+        print(lines)
 
         for x in range(1, len(lines)-2, 3):
             if lines[x] == '': continue
             else:
+                print(lines[x])
+                meep = lines[x].split(" = ")[1].strip("'")
+                print(meep)
+                meep2 = lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00"
+                print(meep2)
+                meep3 = lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
+                print(meep3)
                 task_info = {
-                    "task": lines[x].split(" = ")[1].strip("'"),
-                    "start_time": lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00",
-                    "end_time": lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
+                    "task": meep,
+                    "start_time": meep2,
+                    "end_time": meep3
                 }
                 schedule.append(task_info)
 
