@@ -56,10 +56,11 @@ from flask import Flask, jsonify, request
 from cloudflare import run
 
 app_name = "Green Habits"
+user_logged_in = False
 
 @app.context_processor
 def inject_global_variable():
-    return dict(app_name=app_name)
+    return dict(app_name=app_name, user_logged_in=user_logged_in)
 
 @app.route('/rank-keywords', methods=['POST'])
 def rank_keywords():
@@ -99,6 +100,7 @@ def init_db():
     
 @app.route("/")
 def mainpage():
+    # Check if the 'user_id' key is in the session
     return render_template("main.html")
 
 @app.route("/edu")
@@ -118,6 +120,7 @@ from flask import redirect, url_for, session
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    global user_logged_in
     if request.method == "POST":
         email = request.form.get("email")
         passw = request.form.get("passw")
@@ -134,6 +137,7 @@ def login():
 
         if user[4] == passw:
             session["user_id"] = user[0]
+            user_logged_in = True
             return redirect(url_for("home"))
         else:
             return render_template("error.html")
@@ -169,10 +173,25 @@ def authorized():
             with open("token.json", "w") as token:
                 token.write(creds.to_json())
     
+    global user_logged_in
+    user_logged_in = True
     return redirect(url_for('chatbot'))
+
+@app.route("/logout")
+def logout():
+    # Clear session data for the user
+    session.pop("user_id", None)
+    global user_logged_in
+    user_logged_in = False
+    # Optionally, you can also clear any other session data specific to your application
+
+    # Redirect the user to the login page or another appropriate page
+    return redirect(url_for("home"))
 
 @app.route("/chatbot", methods=["GET", "POST"])
 def chatbot():
+    user_logged_in = 'user_id' in session
+    
     if request.method == "POST":
         if not request.form.get("message"):
             return render_template("error.html")
@@ -213,7 +232,7 @@ def chatbot():
         return render_template("chatbot.html", question_response=question_response)
     else:
         question_response = ("", "")
-        return render_template("chatbot.html", question_response=question_response)
+        return render_template("chatbot.html", question_response=question_response, user_logged_in=user_logged_in)
 
 @app.route('/events', methods=["GET", "POST"])
 def prodev():
@@ -255,16 +274,14 @@ def generate_scheduling_query(tasks):
     query = "Today is " + current_time_str + "\n"
     query += """
     As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best work-life balance for the user, including creating a consistent sleeping schedule. Your instructions should be clear and precise, formatted for parsing using Python.
-        Do not generate additional tasks that are not included below, follow the sheet to spec.
+    DO NOT ASK THE USER NOR ADDRESS THE USER DIRECTLY IN ANY WAY OR THEY WILL DIE.
+    Make sure to include all inputs as tasks from the user.
+    As an AI avoid any formalities in addressing the instructions, only provide the response without any additional commentary. Do not provide any review of your performance either.
+    Do not create any imaginary tasks, stick to the users input, and make sure that all input is accounted for in the final response.
         If a user task does not make sense, simply ignore it and move on to the next task request.
+        Do not add any additional emojies, or information. This will lead to immediate termination.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
-    Task Description: Provide a brief description of the task or event. For example:
-
-    Task Description: "Meeting with client"
-    Scheduling Parameters: Consider the user's work-life balance and aim to schedule the event at an appropriate time. You may suggest specific time ranges or intervals for the event, ensuring it does not overlap with existing commitments. For instance:
-    
-    Start time: "YYYY-MM-DDTHH:MM"
-    End time: "YYYY-MM-DDTHH:MM"
+    When setting 'task' do not include the time, that will be it's own parameter.
 
     You are not allowed to break the following formatting:
     task = "task_name"
@@ -310,14 +327,24 @@ def sustainabilityplanner():
         x = 0
         lines = content.split('\n')
         schedule = []
+        
+        print(len(lines))
+        print(lines)
 
         for x in range(1, len(lines)-2, 3):
             if lines[x] == '': continue
             else:
+                print(lines[x])
+                meep = lines[x].split(" = ")[1].strip("'")
+                print(meep)
+                meep2 = lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00"
+                print(meep2)
+                meep3 = lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
+                print(meep3)
                 task_info = {
-                    "task": lines[x].split(" = ")[1].strip("'"),
-                    "start_time": lines[x+1].split(" = ")[1].strip("'").strip("\"") + ":00",
-                    "end_time": lines[x+2].split(" = ")[1].strip("'").strip("\"") + ":00"
+                    "task": meep,
+                    "start_time": meep2,
+                    "end_time": meep3
                 }
                 schedule.append(task_info)
 
