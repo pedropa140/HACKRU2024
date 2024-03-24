@@ -12,6 +12,8 @@ import datetime as dt
 
 import cloudflare
 from authlib.integrations.flask_client import OAuth
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 
 API_BASE_URL = "https://api.cloudflare.com/client/v4/accounts/ce787f621d3df59e07bd0ff342723ae1/ai/run/"
 headers = {"Authorization": "Bearer wkd748PVSeSQRk2iQSS-eb8rB25ihto-296YmYAD"}
@@ -23,6 +25,18 @@ app.config["SESSION_TYPE"] = "filesystem"
 load_dotenv()
 DATABASE = 'profiles.db'
 app.config['DATABASE'] = DATABASE
+
+oauth = OAuth(app)
+oauth.register(
+    "oauthApp",
+    client_id='GSlRU8ssqQmC7BteFwhCLqxonlmtvSBP',
+    client_secret='4YFxFjzvuXtXyYMoJ9coyCHDphXdUYMAGNF3gcwpZh16Hv-Hz_s83TqawI0RmR2b',
+    api_base_url='https://dev-jkuyeavh0j4elcuc.us.auth0.com',
+    access_token_url='https://dev-jkuyeavh0j4elcuc.us.auth0.com/oauth/token',
+    authorize_url='https://dev-jkuyeavh0j4elcuc.us.auth0.com/oauth/authorize',
+    client_kwargs={'scope': 'scope_required_by_provider'}
+)
+
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -53,6 +67,8 @@ def signup():
     else:
         return render_template("signup.html")
 
+from flask import redirect, url_for, session
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -69,14 +85,22 @@ def login():
         if not user:
             return render_template("error.html")
 
-       
         if user[4] == passw:
             session["user_id"] = user[0]
             return redirect(url_for("home"))
         else:
             return render_template("error.html")
 
-    return render_template("login.html")
+    # If it's a GET request, initiate the OAuth authorization process
+    return oauth.create_client("oauthApp").authorize_redirect(redirect_uri=url_for('authorized', _external=True))
+
+@app.route('/authorized')
+def authorized():
+    token = oauth.oauthApp.authorize_access_token()
+    # Fetch user profile using the token and store user information in the session or database
+    # Redirect to the home page or profile page after successful login
+    return redirect(url_for('chatbot'))
+
 
 @app.route("/chatbot", methods=["GET", "POST"])
 def chatbot():
