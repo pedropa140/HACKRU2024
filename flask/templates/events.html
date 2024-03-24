@@ -80,29 +80,32 @@
                     <p class="card-text"><b>Link</b>: <a href={{event.link}}>Click here to learn more!</a></p>
                     {% set start_str = format_str(event.start_time) %}
                     {% set end_str = format_str(event.end_time) %}
-                    <button type="button" class="btn btn-info" onclick="attendEvent('${event.title}', '${sentences}', '${event.location}', '${start_str}', '${end_str}', '${+05:30}')">Add to Google Calendar!</button>
-                    <script>
-                        function attendEvent(name, description, location, date, startTime, endTime, timezone) {
-                            // Make an AJAX request to the server to submit the event name
-                            var xhr = new XMLHttpRequest();
-                            xhr.open("POST", "/events", true);
-                            xhr.setRequestHeader("Content-Type", "application/json");
-                            xhr.onreadystatechange = function () {
-                                if (xhr.readyState === XMLHttpRequest.DONE) {
-                                    if (xhr.status === 200) {
-                                        alert("Attending event: " + name);
-                                    } else {
-                                        alert("Failed to attend event: " + name);
-                                    }
-                                }
-                            };
-                            xhr.send(JSON.stringify({ name: name, description: description, location: location, startTime: startTime, endTime: endTime, timezone: timezone }));
-                        }
-                    </script>
+                    <button type="button" class="btn btn-info" onclick="attendEvent('{{ event.title }}', '{{ event.description }}', '{{ start_str }}', '{{ end_str }}', '${+5:30}')">Add to Google Calendar!</button>
                 </li>
             </ul>
         </div>
         {% endfor %}
     </div>
+    <script>
+        const arr = ["Livingston Student Center", "Busch Student Center", "College Ave Student Center", "Cook Student Center", "Douglass Student Center"]
+        
+        function attendEvent(name, description, startTime, endTime, timezone) {
+            // Make an AJAX request to the server to submit the event name
+            const randomNumber = Math.floor(Math.random() * 5);
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/events", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        alert("Attending event: " + name);
+                    } else {
+                        alert("Failed to attend event: " + name);
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ name: name, description: description, location: arr[randomNumber], startTime: startTime, endTime: endTime, timezone: timezone }));
+        }
+    </script>
 </body>
 </html>
