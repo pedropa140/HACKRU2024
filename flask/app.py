@@ -248,6 +248,8 @@ def generate_scheduling_query(tasks):
     query = "Today is " + current_time_str + "\n"
     query += """
     As an AI, your task is to generate raw parameters for creating a quick Google Calendar event. Your goal is to ensure the best schedule to priotize sustainable lifestyle for the user, including shorter shower times. Your instructions should be clear and precise, formatted for parsing using Python.
+        Do not generate any text that is NOT the format below. I DO NOT want any leading or trailing comments.
+        For example, do not start with I understand just go straight into the format I am asking you to use
         Do not generate additional tasks that are not included below, follow the sheet to spec.
         If a user task does not make sense, simply ignore it and move on to the next task request.
     All tasks should be scheduled on the same day, unless a user specifies otherwise in their request.
@@ -270,6 +272,7 @@ def generate_scheduling_query(tasks):
     Avoid scheduling events during the user's designated sleeping hours.
     Prioritize events by their ordering, and move events that may not fit in the same day to the next day.
     Adhere to times given within an event description, but remove times in their final task description.
+    Please do not add anything beyond above, do not add a trailing or beginning message please.
     The tasks requested are as follows:\n
     """
     taskss =""
@@ -281,7 +284,7 @@ def generate_scheduling_query(tasks):
         { "role": "user", "content": taskss}
     ]
     result_dictionary = cloudflare.run("@cf/meta/llama-2-7b-chat-int8", inputs)
-    # print(result_dictionary)
+    print(result_dictionary)
     result_result = result_dictionary['result']
     result_response = result_result['response']
     return result_response
