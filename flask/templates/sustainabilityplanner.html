@@ -105,8 +105,8 @@
             <div class="mask me-2" style="
                 background: linear-gradient(
                     45deg,
-                    hsla(168, 85%, 52%, 0.7),
-                    hsla(263, 88%, 45%, 0.7) 100%
+                    hsla(140, 100%, 50%, .3), /* Green color for the gradient */
+                    hsla(100, 100%, 50%, 0.2) 100%
                 );
                 border-radius: 50%;
                 display: flex;
@@ -120,8 +120,8 @@
             </div>
             <h1 class="mb-0 ms-3 fs-0">Welcome back, User.</h3>
         </div>
-        <div class='mt-lg-4'>
-        <h2 class="title d-flex mb-3">Your Tasks</h2>
+        <div class='mt-lg-5'>
+        <h2 class="title d-flex mb-3 fs-3">Handle your tasks</h2>
         <div id="taskInput" class="input-group mb-3">
             <input type="text" id="task" class="form-control rounded-start" placeholder="Enter your task">
             <button class="btn btn-success rounded-end" type="button" onclick="addTask()">Add Task</button>
