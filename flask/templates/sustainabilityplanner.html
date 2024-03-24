@@ -5,104 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/static/images/icon.png">
     <title>User Tasks</title>
-    <!-- Import Protest Riot font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Protest+Riot:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Import Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Add custom styles if needed */
-        /* Adjustments to match Bootstrap styling */
-        #taskInput,
-        #taskList {
+        /* Adjustments for modern and professional interface */
+        body {
+            background-color: #fff; /* White background */
+            font-family: Arial, sans-serif; /* Default font */
+            color: #333; /* Text color */
+        }
+
+        .title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #555; /* Title color */
+        }
+
+        #taskInput {
             margin-bottom: 20px;
         }
 
         .list-group-item {
             cursor: move;
-            display: flex;
-            align-items: center;
-            font-family: sans-serif;
-            font-size: 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
         }
 
         .delete-btn {
-            color: #dc3545;
-            font-size: 1.5rem; /* Increase delete button size */
-            background-color: transparent;
+            color: #fff;
+            font-size: 1.2rem;
+            background-color: #dc3545;
             border: none;
-            margin-left: auto;
-            padding: 0.5rem; /* Increase padding for button */
+            padding: 5px 10px;
+            border-radius: 50%;
         }
 
         .delete-btn:hover {
-            color: white;
-            background-color: #dc3545; /* Change background color of delete button on hover */
+            background-color: #f00;
         }
 
-        .delete-btn:focus {
-            outline: none; /* Remove outline when delete button is focused */
-        }
-
-        .list-group-item:hover {
-            background-color: #cce5ff !important; /* Change background color of list group item on hover */
-        }
-
-        /* Highlight list group item only when hovering over delete button */
-        .list-group-item .delete-btn:hover ~ * {
-            background-color: transparent !important;
-        }
-
-        /* Center the title */
-        .title {
-            text-align: center;
-            font-family: sans-serif;
-            font-size: 75px; /* Increase font size */
-            margin-bottom: 50px;
-            margin-top: 60px;
-            color: white;
-        }
-
-        /* Style the Submit Tasks button */
         #submitBtn {
             text-align: center;
+            margin-top: 20px;
         }
 
         #submitBtn button {
-            font-family: sans-serif; /* Set font to Protest Riot */
-            font-size: 30px; /* Increase font size */
-            height: 110%;
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit button width */
-            margin: 0 auto; /* Center button */
-            display: block; /* Ensure button is block-level element */
+            font-size: 20px;
+            width: 100%;
         }
 
-        /* Increase height of input box */
-        #task {
-            height: 50px; /* Set desired height */
+        /* New CSS for horizontal card layout */
+        .card-container {
+            display: flex;
+            overflow-x: auto; /* Enable horizontal scrolling */
+            gap: 10px;
+            padding-bottom: 20px; /* Add padding to ensure space for scrollbar */
+            /* Optional: Hide vertical scrollbar */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        .card-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+        }
+        
+        .card {
+            flex: 0 0 auto;
+            width: 30%; /* Adjust card width */
+        }
+        
+        .card-inner {
+            position: relative; /* Required for overlay */
+        }
+        
+        .card-img-top {
+            border-radius: 0.75rem 0.75rem 0 0; /* Rounded top corners */
+            object-fit: cover; /* Cover image */
+            height: 30%;
+        }
+        
+        .card-body {
+            padding: 1.5rem; /* Padding for card body */
+        }
+        
+        .card-title {
+            font-size: 1.25rem; /* Title font size */
+            margin-bottom: 0.75rem; /* Bottom margin for title */
         }
 
-        /* Set background image */
-        body {
-            background-image: url("/static/images/work.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-            color: white; /* Set text color to white */
-        }
     </style>
 </head>
-<body>
-    {% comment %} {% include 'navbar-auth.html' %} {% endcomment %}
-
-    <div class="container mt-4">
+<body class="d-flex justify-content-center">
+    <div class="flex p-4 w-75 justify-content-center ">
         <h2 class="title">Your Tasks</h2>
         <div id="taskInput" class="input-group mb-3">
-            <input type="text" id="task" class="form-control" placeholder="Enter your task">
-            <button class="btn btn-primary" type="button" onclick="addTask()">Add Task</button>
+            <input type="text" id="task" class="form-control rounded-start" placeholder="Enter your task">
+            <button class="btn btn-success rounded-end" type="button" onclick="addTask()">Add Task</button>
         </div>
-        <div id="taskList">
-            <ul id="list" class="list-group" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+        <div id="taskList" class="card-container rounded-4">
+            <!-- Cards will be added here dynamically -->
         </div>
         <div id="submitBtn" style="display: none;">
-            <button class="btn btn-success" onclick="submitTasks()">Submit Tasks</button>
+            <button class="btn btn-primary" onclick="submitTasks()">Submit Tasks</button>
         </div>
     </div>
 
@@ -119,9 +126,9 @@
             var taskInput = document.getElementById("task");
             var task = taskInput.value.trim();
             if (task !== "") {
-                var list = document.getElementById("list");
-                var listItem = createListItem(task);
-                list.appendChild(listItem);
+                var cardContainer = document.getElementById("taskList");
+                var card = createListItem(task);
+                cardContainer.appendChild(card);
                 taskInput.value = "";
                 tasksAdded++;
                 toggleSubmitBtn();
@@ -131,24 +138,68 @@
         }
 
         function createListItem(task) {
-            var listItem = document.createElement("li");
-            listItem.textContent = task;
-            listItem.className = "list-group-item d-flex justify-content-between align-items-center";
-            listItem.setAttribute("draggable", "true");
-            listItem.setAttribute("ondragstart", "drag(event)");
-            listItem.id = "task" + (tasksAdded + 1);
-            listItem.setAttribute("name", "list" + (tasksAdded + 1));
-            var deleteBtn = createDeleteButton(listItem);
-            listItem.appendChild(deleteBtn);
-            return listItem;
+            var card = document.createElement("div");
+            card.className = "card mb-4 mb-xl-0 card-hover border";
+            
+            var cardInner = document.createElement("div");
+            cardInner.className = "card-inner";
+            
+            var img = document.createElement("img");
+            img.alt = "Task Image";
+            img.className = "img-fluid w-100 rounded-top-3 card-img-top";
+        
+            // Event listener for image load
+            img.onload = function() {
+                var cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+        
+                var title = document.createElement("h3");
+                title.className = "card-title mb-4 text-truncate";
+                title.textContent = task;
+        
+                var deleteBtn = createDeleteButton(cardInner);
+                cardBody.appendChild(title);
+                cardBody.appendChild(deleteBtn);
+        
+                cardInner.appendChild(img);
+                cardInner.appendChild(cardBody);
+        
+                card.appendChild(cardInner);
+            };
+        
+            // Fetch image URL based on user input keywords
+            var imageURL = fetchImageURL(task);
+            img.src = imageURL;
+        
+            return card;
         }
+        
+        
+        function fetchImageURL(keyword) {
+            // Here you can implement a function to fetch image URL based on keywords using a real image site
+            // For example, using a placeholder image site like Unsplash
+            var baseAPIUrl = 'https://source.unsplash.com/'; // Base URL for Unsplash images
+            var imageSize = '800x600'; // Image size
+            var query = encodeURIComponent(keyword); // Encode keyword for URL
+            
+            // Construct final URL with keyword and image size
+            var finalURL = baseAPIUrl + imageSize + '/?' + query;
+            
+            return finalURL;
+        }
+        
+        // Example usage:
+        var task = "Education Edition Deployment And Set Up"; // Replace with user input
+        var cardElement = createListItem(task);
+        document.getElementById("taskList").appendChild(cardElement);
+        
 
         function createDeleteButton(listItem) {
             var deleteBtn = document.createElement("button");
             deleteBtn.textContent = "×"; // Using a close symbol
-            deleteBtn.className = "delete-btn btn";
+            deleteBtn.className = "delete-btn";
             deleteBtn.onclick = function () {
-                listItem.remove();
+                listItem.parentElement.remove();
                 tasksAdded--;
                 toggleSubmitBtn();
             };
@@ -160,8 +211,8 @@
         }
 
         function submitTasks() {
-            var tasks = Array.from(document.querySelectorAll("#list li")).map(task => task.textContent);
-            fetch('/taskschedule', {
+            var tasks = Array.from(document.querySelectorAll(".card-title")).map(task => task.textContent);
+            fetch('/sustainabilityplanner', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,41 +226,6 @@
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-        }
-
-        function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
-
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
-
-        function drop(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            var draggedItem = document.getElementById(data
-            );
-            var target = ev.target.closest('ul');
-            if (target && target.id === 'list') {
-                var targetItem = ev.target.closest('li');
-                if (targetItem) {
-                    var targetIndex = Array.from(target.children).indexOf(targetItem);
-                    var list = document.getElementById('list');
-                    var draggedIndex = Array.from(list.children).indexOf(draggedItem);
-                    if (draggedIndex !== -1 && draggedIndex !== targetIndex) {
-                        list.insertBefore(draggedItem, draggedIndex < targetIndex ? targetItem.nextSibling : targetItem);
-                        updateTaskIds();
-                    }
-                }
-            }
-        }
-
-        function updateTaskIds() {
-            var listItems = document.querySelectorAll("#list li");
-            listItems.forEach(function (item, index) {
-                item.id = "task" + (index + 1);
-            });
         }
     </script>
 </body>
